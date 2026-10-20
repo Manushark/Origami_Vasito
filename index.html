@@ -536,7 +536,7 @@
     }
 
     /* ── Renderizado SVG con Soporte de Animación ── */
-    function drawPaperModel(stepIndex, t = 0) {
+    function drawPaperModel(stepIndex, t = 1) {
       clearDrawing();
 
       const mamey = "#e8734a";
@@ -588,9 +588,9 @@
           stroke: verde, "stroke-width": "2", "stroke-dasharray": "4 4", opacity: "0.8"
         }));
         drawingGroup.appendChild(el("text", {
-          x: 190, y: 108, "text-anchor": "middle",
+          x: 190, y: 96, "text-anchor": "middle",
           fill: verde, "font-size": "9.5", "font-weight": "800"
-        }, "— El borde de arriba queda completamente recto —"));
+        }, "Borde doblado: recto y horizontal"));
 
         drawingGroup.appendChild(el("polygon", {
           points: "160,160 265,115 310,160",
@@ -601,7 +601,12 @@
         const targetY = 160 - (160 - 115) * t;
         drawingGroup.appendChild(el("polygon", {
           points: `160,160 265,115 ${targetX},${targetY}`,
-          fill: mameyOscuro, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+          fill: blanco, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+
+        drawingGroup.appendChild(el("line", {
+          x1: 115, y1: 115, x2: 265, y2: 115,
+          stroke: borde, "stroke-width": "3.5", "stroke-linecap": "round"
         }));
 
         if (t === 0) {
@@ -627,14 +632,19 @@
 
         drawingGroup.appendChild(el("polygon", {
           points: "160,160 265,115 115,115",
-          fill: mameyOscuro, stroke: borde, "stroke-width": "2", "stroke-linejoin": "round"
+          fill: "#fffefa", stroke: borde, "stroke-width": "2", "stroke-linejoin": "round"
         }));
 
         const targetX = 70 + (265 - 70) * t;
         const targetY = 160 - (160 - 115) * t;
         drawingGroup.appendChild(el("polygon", {
           points: `220,160 115,115 ${targetX},${targetY}`,
-          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+          fill: blanco, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+
+        drawingGroup.appendChild(el("line", {
+          x1: 115, y1: 115, x2: 265, y2: 115,
+          stroke: borde, "stroke-width": "3.5", "stroke-linecap": "round"
         }));
 
         if (t === 0) {
@@ -814,7 +824,7 @@
       btnNext.textContent = actual === pasos.length - 1 ? "¡Completado! 🎉" : "Siguiente paso →";
 
       // Render inicial plano del paso
-      drawPaperModel(actual, 0);
+      drawPaperModel(actual, 1);
     }
 
     btnPrev.addEventListener("click", () => {
