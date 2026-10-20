@@ -11,10 +11,12 @@
       --papel-mamey: #e8734a;
       --papel-mamey-oscuro: #c85a35;
       --papel-blanco: #ffffff;
+      --papel-blanco-borde: #d5c8b5;
       --tinta: #1d2e24;
       --suave: #536458;
       --verde: #336948;
       --verde-hover: #265237;
+      --rojo-doblez: #d9383a;
       --borde: #e4dacb;
       --tarjeta: #ffffff;
       --sombra: 0 12px 32px rgba(45, 35, 25, 0.08);
@@ -129,7 +131,7 @@
       background: #ede5da;
       border-radius: 999px;
       overflow: hidden;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .progress-fill {
       height: 100%;
@@ -139,29 +141,53 @@
       transition: width 0.3s ease;
     }
 
-    /* Espacio Reservado para la Ilustración */
-    .stage-placeholder {
+    /* Escenario SVG Ilustrado */
+    .stage-wrapper {
       background: #faf6ef;
-      border: 2px dashed #d8cbba;
+      border: 1px solid #ebd9c5;
       border-radius: 16px;
-      min-height: 240px;
+      min-height: 280px;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      color: var(--suave);
       margin-bottom: 20px;
-      padding: 20px;
-      text-align: center;
+      padding: 10px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
     }
-    .stage-placeholder span {
-      font-size: 2.2rem;
+    #paperSvg {
+      width: 100%;
+      max-width: 380px;
+      height: 280px;
+      display: block;
     }
-    .stage-placeholder p {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #7d7065;
+
+    /* Estilos SVG */
+    .fold-line {
+      stroke: var(--rojo-doblez);
+      stroke-width: 2.5;
+      stroke-dasharray: 6 5;
+      stroke-linecap: round;
+    }
+    .fold-line-glow {
+      stroke: rgba(217, 56, 58, 0.3);
+      stroke-width: 6;
+      stroke-linecap: round;
+    }
+    .ghost-line {
+      stroke: #a08c79;
+      stroke-width: 1.8;
+      stroke-dasharray: 4 4;
+    }
+    .fold-tag {
+      font-size: 11px;
+      font-weight: 800;
+      fill: #ffffff;
+      font-family: system-ui, sans-serif;
+    }
+    .fold-tag-bg {
+      fill: var(--rojo-doblez);
+      rx: 5px;
     }
 
     /* Textos del Paso */
@@ -263,9 +289,16 @@
         <div class="progress-fill" id="progressFill"></div>
       </div>
 
-      <div class="stage-placeholder" id="stagePlaceholder">
-        <span>📐</span>
-        <p>Espacio reservado para el dibujo del paso</p>
+      <!-- Escenario SVG con Gráficos Claros y Geometría Precisa -->
+      <div class="stage-wrapper">
+        <svg id="paperSvg" viewBox="0 0 380 320" role="img" aria-label="Ilustración geométrica del paso">
+          <defs>
+            <marker id="foldArrow" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#336948"/>
+            </marker>
+          </defs>
+          <g id="drawingGroup"></g>
+        </svg>
       </div>
 
       <div class="step-content">
@@ -325,6 +358,231 @@
     const stepTip = document.getElementById("stepTip");
     const btnPrev = document.getElementById("btnPrev");
     const btnNext = document.getElementById("btnNext");
+    const drawingGroup = document.getElementById("drawingGroup");
+
+    const ns = "http://www.w3.org/2000/svg";
+
+    function el(tag, attrs = {}, text = "") {
+      const node = document.createElementNS(ns, tag);
+      for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+      if (text) node.textContent = text;
+      return node;
+    }
+
+    function clearDrawing() {
+      while (drawingGroup.firstChild) drawingGroup.removeChild(drawingGroup.firstChild);
+    }
+
+    function drawFoldLine(x1, y1, x2, y2, label = "", labelYOffset = -14) {
+      drawingGroup.appendChild(el("line", { x1, y1, x2, y2, class: "fold-line-glow" }));
+      drawingGroup.appendChild(el("line", { x1, y1, x2, y2, class: "fold-line" }));
+
+      if (label) {
+        const mx = (x1 + x2) / 2;
+        const my = (y1 + y2) / 2 + labelYOffset;
+        const width = label.length * 6.5 + 16;
+        drawingGroup.appendChild(el("rect", {
+          x: mx - width / 2, y: my - 10, width, height: 18, rx: 9, class: "fold-tag-bg"
+        }));
+        drawingGroup.appendChild(el("text", {
+          x: mx, y: my + 3, "text-anchor": "middle", class: "fold-tag"
+        }, label));
+      }
+    }
+
+    function drawArrow(x1, y1, x2, y2, qx, qy, label = "") {
+      const midX = qx !== undefined ? qx : (x1 + x2) / 2;
+      const midY = qy !== undefined ? qy : (y1 + y2) / 2 - 18;
+
+      drawingGroup.appendChild(el("path", {
+        d: `M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}`,
+        fill: "none", stroke: "#336948", "stroke-width": "3.5",
+        "stroke-linecap": "round", "marker-end": "url(#foldArrow)"
+      }));
+
+      if (label) {
+        drawingGroup.appendChild(el("text", {
+          x: midX, y: midY - 8, "text-anchor": "middle",
+          fill: "#224731", "font-size": "10.5", "font-weight": "800"
+        }, label));
+      }
+    }
+
+    /* ── Renderizado de Ilustraciones SVG Precisas y Derechas ── */
+    function drawPaperModel(stepIndex) {
+      clearDrawing();
+
+      const mamey = "#e8734a";
+      const mameyOscuro = "#c85a35";
+      const blanco = "#ffffff";
+      const borde = "#382315";
+      const verde = "#336948";
+
+      // Sombra en la mesa
+      drawingGroup.appendChild(el("ellipse", {
+        cx: 190, cy: 290, rx: 110, ry: 14, fill: "#543d2c", opacity: "0.1"
+      }));
+
+      if (stepIndex === 0) {
+        // PASO 1: Diamante que se dobla hacia arriba
+        // Mitad superior
+        drawingGroup.appendChild(el("polygon", {
+          points: "190,40 310,160 70,160",
+          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+        // Mitad inferior
+        drawingGroup.appendChild(el("polygon", {
+          points: "70,160 310,160 190,280",
+          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+
+        drawFoldLine(70, 160, 310, 160, "Línea de pliegue");
+        drawArrow(190, 260, 190, 80, 165, 170, "Lleva la punta arriba");
+
+      } else if (stepIndex === 1) {
+        // PASO 2: Triángulo base. Punta derecha doblándose a la izquierda.
+        // Triángulo base
+        drawingGroup.appendChild(el("polygon", {
+          points: "190,40 70,160 310,160",
+          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+
+        // Borde superior horizontal de referencia
+        drawingGroup.appendChild(el("line", {
+          x1: 115, y1: 115, x2: 265, y2: 115,
+          stroke: verde, "stroke-width": "2", "stroke-dasharray": "4 4", opacity: "0.8"
+        }));
+        drawingGroup.appendChild(el("text", {
+          x: 190, y: 108, "text-anchor": "middle",
+          fill: verde, "font-size": "9.5", "font-weight": "800"
+        }, "— El borde de arriba queda completamente recto —"));
+
+        // Espacio que deja la esquina derecha al levantarse (reverso blanco)
+        drawingGroup.appendChild(el("polygon", {
+          points: "160,160 265,115 310,160",
+          fill: "rgba(255,255,255,0.75)", class: "ghost-line"
+        }));
+
+        // Solapa doblada hacia la izquierda (frente mamey con borde blanco)
+        drawingGroup.appendChild(el("polygon", {
+          points: "160,160 265,115 115,115",
+          fill: mameyOscuro, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+
+        drawFoldLine(160, 160, 265, 115);
+        drawArrow(290, 150, 125, 120, 210, 85, "Hacia el borde izquierdo");
+
+      } else if (stepIndex === 2) {
+        // PASO 3: Punta izquierda cruzándose hacia la derecha
+        drawingGroup.appendChild(el("polygon", {
+          points: "190,40 70,160 310,160",
+          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+
+        // Espacios libres que dejaron los dos lados
+        drawingGroup.appendChild(el("polygon", {
+          points: "160,160 265,115 310,160",
+          fill: "rgba(255,255,255,0.75)", class: "ghost-line"
+        }));
+        drawingGroup.appendChild(el("polygon", {
+          points: "70,160 115,115 220,160",
+          fill: "rgba(255,255,255,0.75)", class: "ghost-line"
+        }));
+
+        // Primera solapa (debajo)
+        drawingGroup.appendChild(el("polygon", {
+          points: "160,160 265,115 115,115",
+          fill: mameyOscuro, stroke: borde, "stroke-width": "2", "stroke-linejoin": "round"
+        }));
+
+        // Segunda solapa cruzada por encima
+        drawingGroup.appendChild(el("polygon", {
+          points: "220,160 115,115 265,115",
+          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+
+        drawFoldLine(220, 160, 115, 115);
+        drawArrow(85, 150, 255, 120, 170, 85, "Cruza hacia la derecha");
+
+      } else if (stepIndex === 3) {
+        // PASO 4: DOS PUNTAS. Doblar SOLO LA DE ADELANTE en el bolsillo.
+        // Cuerpo inferior del vaso
+        drawingGroup.appendChild(el("polygon", {
+          points: "115,115 265,115 220,160 160,160",
+          fill: mameyOscuro, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+
+        // PUNTA TRASERA: se queda erguida arriba (mostrando reverso blanco)
+        drawingGroup.appendChild(el("polygon", {
+          points: "115,115 190,40 265,115",
+          fill: blanco, stroke: borde, "stroke-width": "2.2", "stroke-linejoin": "round"
+        }));
+
+        // Etiqueta indicando que son dos puntas
+        drawingGroup.appendChild(el("text", {
+          x: 190, y: 22, "text-anchor": "middle",
+          fill: "#5a4b3d", "font-size": "10.5", "font-weight": "800"
+        }, "Arriba hay 2 puntas: toma solo la del frente"));
+
+        // Solapa delantera doblándose hacia el bolsillo
+        drawingGroup.appendChild(el("polygon", {
+          points: "115,115 265,115 190,165",
+          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+
+        drawFoldLine(115, 115, 265, 115, "Doblar hacia ti");
+        drawArrow(190, 55, 190, 150, 215, 100, "Al bolsillo");
+
+      } else if (stepIndex === 4) {
+        // PASO 5: Voltear y doblar la otra punta por detrás
+        drawingGroup.appendChild(el("text", {
+          x: 190, y: 24, "text-anchor": "middle",
+          fill: verde, "font-size": "11.5", "font-weight": "800"
+        }, "🔄 Voltea el vaso hacia la espalda"));
+
+        // Cuerpo trasero del vaso
+        drawingGroup.appendChild(el("polygon", {
+          points: "115,115 265,115 220,160 160,160",
+          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+
+        // Punta trasera doblada hacia abajo por detrás
+        drawingGroup.appendChild(el("polygon", {
+          points: "115,115 265,115 190,165",
+          fill: mameyOscuro, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+
+        drawFoldLine(115, 115, 265, 115);
+        drawArrow(190, 55, 190, 145, 165, 100, "Dobla hacia abajo pegada al vaso");
+
+      } else if (stepIndex === 5) {
+        // PASO 6: Abrir el vaso apretando los lados
+        // Vaso tridimensional abierto
+        drawingGroup.appendChild(el("polygon", {
+          points: "115,115 265,115 220,180 160,180",
+          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+        }));
+
+        // Boca abierta del vaso
+        drawingGroup.appendChild(el("ellipse", {
+          cx: 190, cy: 115, rx: 75, ry: 20,
+          fill: "#5a2d18", stroke: borde, "stroke-width": "2.5"
+        }));
+        drawingGroup.appendChild(el("ellipse", {
+          cx: 190, cy: 115, rx: 65, ry: 14,
+          fill: "#844224", opacity: "0.8"
+        }));
+
+        // Flechas laterales presionando
+        drawArrow(90, 145, 125, 145, 107, 135, "Aprieta");
+        drawArrow(290, 145, 255, 145, 273, 135, "Aprieta");
+
+        drawingGroup.appendChild(el("text", {
+          x: 190, y: 220, "text-anchor": "middle",
+          fill: verde, "font-size": "13", "font-weight": "800"
+        }, "🎉 ¡El vaso está abierto y listo!"));
+      }
+    }
 
     function render() {
       const p = pasos[actual];
@@ -336,6 +594,9 @@
       stepTip.innerHTML = `<strong>💡 El truco:</strong> ${p.consejo}`;
       btnPrev.disabled = actual === 0;
       btnNext.textContent = actual === pasos.length - 1 ? "¡Completado! 🎉" : "Siguiente paso →";
+
+      // Renderizar el dibujo exacto del paso
+      drawPaperModel(actual);
     }
 
     btnPrev.addEventListener("click", () => {
