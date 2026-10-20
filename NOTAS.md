@@ -8,4 +8,4 @@ Decisiones: Visor 3D táctil con vistas rápidas, papel de dos caras, animación
 
 Pendiente: Modo oscuro para la noche y fotos con manos reales.
 
-Tiempo: ~54 minutos.
+Tiempo: 54 minutos.
