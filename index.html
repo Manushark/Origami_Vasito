@@ -18,28 +18,42 @@
       --rojo-doblez: #d9383a;
       --borde: #e4dacb;
       --tarjeta: #ffffff;
-      --sombra: 0 12px 32px rgba(45, 35, 25, 0.08);
+      --sombra: 0 14px 36px rgba(45, 35, 25, 0.08);
       --radio: 20px;
       --font-size-base: 16px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: var(--font-size-base); }
+    html {
+      font-size: var(--font-size-base);
+      scroll-behavior: smooth;
+    }
     body {
       background: var(--fondo);
       color: var(--tinta);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       line-height: 1.5;
       min-height: 100vh;
-      padding: 16px 12px 32px;
+      padding: 16px 12px 36px;
       display: flex;
       flex-direction: column;
       align-items: center;
       -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
+    }
+
+    /* Confetti Canvas */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
     }
 
     .app {
-      width: min(600px, 100%);
+      width: min(620px, 100%);
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -51,6 +65,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 10px 4px 18px;
+      gap: 12px;
     }
     .logo {
       display: flex;
@@ -71,6 +86,29 @@
       color: white;
       font-size: 1.2rem;
       box-shadow: 0 4px 10px rgba(232, 115, 74, 0.25);
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-font {
+      background: #fdfaf5;
+      border: 1px solid var(--borde);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--suave);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+    .btn-font:hover {
+      background: #eee4d7;
+      color: var(--tinta);
     }
     .pill-offline {
       background: #e6f3eb;
@@ -245,6 +283,10 @@
       align-items: center;
       gap: 6px;
       box-shadow: 0 2px 6px rgba(51, 105, 72, 0.2);
+      transition: background-color 0.15s;
+    }
+    .btn-anim:hover {
+      background: var(--verde-hover);
     }
     .btn-anim:active {
       transform: scale(0.96);
@@ -355,16 +397,52 @@
       cursor: not-allowed;
       box-shadow: none;
     }
+
+    /* Modal / Banner de Felicitación Final */
+    .celebration-banner {
+      display: none;
+      background: #e6f3eb;
+      border: 2px solid var(--verde);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 18px;
+      animation: popIn 0.35s ease;
+    }
+    .celebration-banner.show {
+      display: block;
+    }
+    .celebration-banner h3 {
+      font-size: 1.25rem;
+      color: var(--verde-hover);
+      margin-bottom: 4px;
+    }
+    .celebration-banner p {
+      font-size: 0.95rem;
+      color: #294734;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
+  <canvas id="confettiCanvas"></canvas>
+
   <div class="app">
     <header>
       <div class="logo">
         <div class="logo-icon">🥤</div>
         Vasito
       </div>
-      <span class="pill-offline">● Sin internet</span>
+      <div class="header-actions">
+        <button class="btn-font" id="fontToggleBtn" title="Cambiar tamaño de letra">
+          <span>🔤</span> <span id="fontBtnText">Letra grande</span>
+        </button>
+        <span class="pill-offline">● Sin internet</span>
+      </div>
     </header>
 
     <section class="intro">
@@ -415,6 +493,11 @@
       </div>
 
       <div class="step-content">
+        <div class="celebration-banner" id="celebrationBanner">
+          <h3>🎉 ¡Felicidades! Lograste tu vasito de papel</h3>
+          <p>Pruébalo con agua o úsalo para guardar pequeños objetos. ¡Gran trabajo!</p>
+        </div>
+
         <h2 class="step-title" id="stepTitle"></h2>
         <p class="step-instruction" id="stepInstruction"></p>
         <div class="tip-card" id="stepTip"></div>
@@ -469,8 +552,8 @@
     let isDragging = false;
     let startX = 0;
     let startY = 0;
-    let animProgress = 0;
     let animTimer = null;
+    let largeFont = false;
 
     const stepChip = document.getElementById("stepChip");
     const progressFill = document.getElementById("progressFill");
@@ -485,6 +568,10 @@
     const angleButtons = document.querySelectorAll(".angle-btn");
     const resetAngleBtn = document.getElementById("resetAngleBtn");
     const animateFoldBtn = document.getElementById("animateFoldBtn");
+    const fontToggleBtn = document.getElementById("fontToggleBtn");
+    const fontBtnText = document.getElementById("fontBtnText");
+    const celebrationBanner = document.getElementById("celebrationBanner");
+    const confettiCanvas = document.getElementById("confettiCanvas");
 
     const ns = "http://www.w3.org/2000/svg";
 
@@ -535,8 +622,8 @@
       }
     }
 
-    /* ── Renderizado SVG con Soporte de Animación ── */
-    function drawPaperModel(stepIndex, t = 1) {
+    /* ── Renderizado SVG con Corrección de Separación y Geometría ── */
+    function drawPaperModel(stepIndex, t = 0) {
       clearDrawing();
 
       const mamey = "#e8734a";
@@ -545,7 +632,7 @@
       const borde = "#382315";
       const verde = "#336948";
 
-      // Sombra proyectada en la mesa
+      // Sombra en la mesa
       drawingGroup.appendChild(el("ellipse", {
         cx: 190, cy: 290, rx: 110, ry: 14, fill: "#543d2c", opacity: "0.1"
       }));
@@ -588,9 +675,9 @@
           stroke: verde, "stroke-width": "2", "stroke-dasharray": "4 4", opacity: "0.8"
         }));
         drawingGroup.appendChild(el("text", {
-          x: 190, y: 96, "text-anchor": "middle",
+          x: 190, y: 108, "text-anchor": "middle",
           fill: verde, "font-size": "9.5", "font-weight": "800"
-        }, "Borde doblado: recto y horizontal"));
+        }, "— El borde de arriba queda completamente recto —"));
 
         drawingGroup.appendChild(el("polygon", {
           points: "160,160 265,115 310,160",
@@ -601,12 +688,7 @@
         const targetY = 160 - (160 - 115) * t;
         drawingGroup.appendChild(el("polygon", {
           points: `160,160 265,115 ${targetX},${targetY}`,
-          fill: blanco, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
-        }));
-
-        drawingGroup.appendChild(el("line", {
-          x1: 115, y1: 115, x2: 265, y2: 115,
-          stroke: borde, "stroke-width": "3.5", "stroke-linecap": "round"
+          fill: mameyOscuro, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
         if (t === 0) {
@@ -632,19 +714,14 @@
 
         drawingGroup.appendChild(el("polygon", {
           points: "160,160 265,115 115,115",
-          fill: "#fffefa", stroke: borde, "stroke-width": "2", "stroke-linejoin": "round"
+          fill: mameyOscuro, stroke: borde, "stroke-width": "2", "stroke-linejoin": "round"
         }));
 
         const targetX = 70 + (265 - 70) * t;
         const targetY = 160 - (160 - 115) * t;
         drawingGroup.appendChild(el("polygon", {
           points: `220,160 115,115 ${targetX},${targetY}`,
-          fill: blanco, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
-        }));
-
-        drawingGroup.appendChild(el("line", {
-          x1: 115, y1: 115, x2: 265, y2: 115,
-          stroke: borde, "stroke-width": "3.5", "stroke-linecap": "round"
+          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
         if (t === 0) {
@@ -653,19 +730,21 @@
         }
 
       } else if (stepIndex === 3) {
-        // PASO 4
+        // PASO 4: Sin choque de texto
         drawingGroup.appendChild(el("polygon", {
           points: "115,115 265,115 220,160 160,160",
           fill: mameyOscuro, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
+        // Punta trasera (blanca erguida)
         drawingGroup.appendChild(el("polygon", {
           points: "115,115 190,40 265,115",
           fill: blanco, stroke: borde, "stroke-width": "2.2", "stroke-linejoin": "round"
         }));
 
+        // Texto ubicado en zona despejada arriba
         drawingGroup.appendChild(el("text", {
-          x: 190, y: 22, "text-anchor": "middle",
+          x: 190, y: 20, "text-anchor": "middle",
           fill: "#5a4b3d", "font-size": "10.5", "font-weight": "800"
         }, "Arriba hay 2 puntas: toma solo la del frente"));
 
@@ -677,13 +756,13 @@
 
         if (t === 0) {
           drawFoldLine(115, 115, 265, 115, "Doblar hacia ti");
-          drawArrow(190, 55, 190, 150, 215, 100, "Al bolsillo");
+          drawArrow(190, 50, 190, 145, 215, 95, "Al bolsillo");
         }
 
       } else if (stepIndex === 4) {
         // PASO 5
         drawingGroup.appendChild(el("text", {
-          x: 190, y: 24, "text-anchor": "middle",
+          x: 190, y: 22, "text-anchor": "middle",
           fill: verde, "font-size": "11.5", "font-weight": "800"
         }, "🔄 Voltea el vaso hacia la espalda"));
 
@@ -700,7 +779,7 @@
 
         if (t === 0) {
           drawFoldLine(115, 115, 265, 115);
-          drawArrow(190, 55, 190, 145, 165, 100, "Dobla hacia abajo pegada al vaso");
+          drawArrow(190, 50, 190, 145, 165, 95, "Dobla hacia abajo pegada al vaso");
         }
 
       } else if (stepIndex === 5) {
@@ -730,11 +809,19 @@
       }
     }
 
-    /* ── Controles 3D y Giro Libre ── */
+    /* ── Controles 3D y Giro Libre Suave ── */
     function updateTransform(smooth = false) {
       if (smooth) paperScene.classList.add("smooth-preset");
       else paperScene.classList.remove("smooth-preset");
       paperScene.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    }
+
+    function resetToFront() {
+      angleButtons.forEach(b => b.classList.remove("active"));
+      document.querySelector('[data-angle="frente"]').classList.add("active");
+      rotX = 0;
+      rotY = 0;
+      updateTransform(true);
     }
 
     const anglePresets = {
@@ -757,15 +844,10 @@
       });
     });
 
-    resetAngleBtn.addEventListener("click", () => {
-      angleButtons.forEach(b => b.classList.remove("active"));
-      document.querySelector('[data-angle="frente"]').classList.add("active");
-      rotX = 0;
-      rotY = 0;
-      updateTransform(true);
-    });
+    resetAngleBtn.addEventListener("click", resetToFront);
 
     stageWrapper.addEventListener("pointerdown", (e) => {
+      if (e.target.closest(".stage-footer, button")) return;
       isDragging = true;
       startX = e.clientX;
       startY = e.clientY;
@@ -777,8 +859,8 @@
       if (!isDragging) return;
       const dx = e.clientX - startX;
       const dy = e.clientY - startY;
-      rotY += dx * 0.7;
-      rotX -= dy * 0.7;
+      rotY += dx * 0.55;
+      rotX -= dy * 0.55;
       rotX = Math.max(-65, Math.min(75, rotX));
       startX = e.clientX;
       startY = e.clientY;
@@ -791,9 +873,11 @@
 
     /* ── Animación del Doblez ── */
     function playFoldAnimation() {
-      if (animTimer) cancelAnimationFrame(animTimer);
+      if (animTimer !== null) cancelAnimationFrame(animTimer);
       let start = null;
-      const duration = 900;
+      const duration = 1600;
+      animateFoldBtn.disabled = true;
+      animateFoldBtn.innerHTML = "<span>⟳</span> Doblando…";
 
       function step(timestamp) {
         if (!start) start = timestamp;
@@ -804,13 +888,82 @@
         if (progress < 1) {
           animTimer = requestAnimationFrame(step);
         } else {
-          setTimeout(() => { drawPaperModel(actual, 1); }, 300);
+          drawPaperModel(actual, 1);
+          animTimer = null;
+          animateFoldBtn.disabled = false;
+          animateFoldBtn.innerHTML = "<span>▶</span> Ver cómo se dobla";
         }
       }
       animTimer = requestAnimationFrame(step);
     }
 
     animateFoldBtn.addEventListener("click", playFoldAnimation);
+
+    /* ── Accesibilidad: Tamaño de Texto ── */
+    fontToggleBtn.addEventListener("click", () => {
+      largeFont = !largeFont;
+      document.documentElement.style.setProperty("--font-size-base", largeFont ? "19px" : "16px");
+      fontBtnText.textContent = largeFont ? "Letra normal" : "Letra grande";
+    });
+
+    /* ── Confetti Celebratorio en Canvas ── */
+    function dispararConfetti() {
+      const ctx = confettiCanvas.getContext("2d");
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ["#e8734a", "#336948", "#f4a261", "#d9383a", "#ffffff", "#ffd166"];
+
+      for (let i = 0; i < 90; i++) {
+        particles.push({
+          x: confettiCanvas.width * 0.5 + (Math.random() * 140 - 70),
+          y: confettiCanvas.height * 0.35 + (Math.random() * 60 - 30),
+          vx: (Math.random() - 0.5) * 11,
+          vy: Math.random() * -7 - 3,
+          size: Math.random() * 9 + 5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 10
+        });
+      }
+
+      let frames = 0;
+      function loop() {
+        ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        frames++;
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.28;
+          p.rotation += p.rotationSpeed;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
+          ctx.restore();
+        });
+
+        if (frames < 120) {
+          requestAnimationFrame(loop);
+        } else {
+          ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        }
+      }
+      loop();
+    }
+
+    /* ── Navegación con Teclado ── */
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") {
+        if (actual < pasos.length - 1) { actual++; render(); }
+      } else if (e.key === "ArrowLeft") {
+        if (actual > 0) { actual--; render(); }
+      }
+    });
 
     function render() {
       const p = pasos[actual];
@@ -821,10 +974,19 @@
       stepInstruction.textContent = p.instruccion;
       stepTip.innerHTML = `<strong>💡 El truco:</strong> ${p.consejo}`;
       btnPrev.disabled = actual === 0;
-      btnNext.textContent = actual === pasos.length - 1 ? "¡Completado! 🎉" : "Siguiente paso →";
 
-      // Render inicial plano del paso
-      drawPaperModel(actual, 1);
+      if (actual === pasos.length - 1) {
+        btnNext.textContent = "¡Completado! 🎉";
+        celebrationBanner.classList.add("show");
+        dispararConfetti();
+      } else {
+        btnNext.textContent = "Siguiente paso →";
+        celebrationBanner.classList.remove("show");
+      }
+
+      // Cada cambio de paso resetea la vista de frente para no desorientar
+      resetToFront();
+      drawPaperModel(actual, 0);
     }
 
     btnPrev.addEventListener("click", () => {
