@@ -11,7 +11,6 @@
       --papel-mamey: #e8734a;
       --papel-mamey-oscuro: #c85a35;
       --papel-blanco: #ffffff;
-      --papel-blanco-borde: #d5c8b5;
       --tinta: #1d2e24;
       --suave: #536458;
       --verde: #336948;
@@ -131,7 +130,7 @@
       background: #ede5da;
       border-radius: 999px;
       overflow: hidden;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     .progress-fill {
       height: 100%;
@@ -141,25 +140,128 @@
       transition: width 0.3s ease;
     }
 
-    /* Escenario SVG Ilustrado */
+    /* Barra de Ángulos 3D */
+    .angle-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .angle-btn {
+      flex: 1;
+      min-width: 65px;
+      background: #f7efe4;
+      border: 1px solid #e2d4c3;
+      border-radius: 10px;
+      padding: 8px 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--suave);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    .angle-btn:hover {
+      background: #ede1d2;
+      color: var(--tinta);
+    }
+    .angle-btn.active {
+      background: var(--tinta);
+      color: #ffffff;
+      border-color: var(--tinta);
+    }
+
+    /* Escenario Interactivo 3D */
     .stage-wrapper {
       background: #faf6ef;
       border: 1px solid #ebd9c5;
       border-radius: 16px;
-      min-height: 280px;
+      min-height: 290px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
-      padding: 10px;
+      position: relative;
       overflow: hidden;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
       box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .stage-wrapper:active {
+      cursor: grabbing;
+    }
+    .viewport-3d {
+      perspective: 1100px;
+      width: 100%;
+      height: 250px;
+      display: grid;
+      place-items: center;
+    }
+    .scene-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
+      width: 100%;
+      max-width: 380px;
+      height: 250px;
+      display: grid;
+      place-items: center;
+    }
+    .scene-3d.smooth-preset {
+      transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
     #paperSvg {
       width: 100%;
       max-width: 380px;
-      height: 280px;
+      height: 250px;
       display: block;
+      overflow: visible;
+    }
+
+    /* Barra inferior del escenario: Botón de Animación y Centrar */
+    .stage-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 8px 12px;
+      background: rgba(247, 239, 228, 0.7);
+      border-top: 1px solid #ebd9c5;
+      z-index: 2;
+    }
+    .btn-anim {
+      background: var(--verde);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(51, 105, 72, 0.2);
+    }
+    .btn-anim:active {
+      transform: scale(0.96);
+    }
+    .btn-center {
+      background: transparent;
+      border: 1px solid #d8c7b4;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--suave);
+      cursor: pointer;
+    }
+    .btn-center:hover {
+      background: #eee3d5;
+      color: var(--tinta);
     }
 
     /* Estilos SVG */
@@ -179,20 +281,10 @@
       stroke-width: 1.8;
       stroke-dasharray: 4 4;
     }
-    .fold-tag {
-      font-size: 11px;
-      font-weight: 800;
-      fill: #ffffff;
-      font-family: system-ui, sans-serif;
-    }
-    .fold-tag-bg {
-      fill: var(--rojo-doblez);
-      rx: 5px;
-    }
 
     /* Textos del Paso */
     .step-content {
-      margin-bottom: 24px;
+      margin: 18px 0 24px;
     }
     .step-title {
       font-size: 1.35rem;
@@ -277,7 +369,7 @@
 
     <section class="intro">
       <h1>Una hoja, un vaso.<br>¡Tú puedes!</h1>
-      <p>Sigue cada doblez paso a paso, con calma y a tu ritmo.</p>
+      <p>Sigue cada doblez paso a paso. Gira el papel en 3D para entenderlo con claridad.</p>
     </section>
 
     <main class="card" aria-label="Instrucciones paso a paso">
@@ -289,16 +381,37 @@
         <div class="progress-fill" id="progressFill"></div>
       </div>
 
-      <!-- Escenario SVG con Gráficos Claros y Geometría Precisa -->
-      <div class="stage-wrapper">
-        <svg id="paperSvg" viewBox="0 0 380 320" role="img" aria-label="Ilustración geométrica del paso">
-          <defs>
-            <marker id="foldArrow" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto">
-              <path d="M0,0 L6,3 L0,6 Z" fill="#336948"/>
-            </marker>
-          </defs>
-          <g id="drawingGroup"></g>
-        </svg>
+      <!-- Barra de Botones de Ángulo 3D -->
+      <div class="angle-bar" role="group" aria-label="Ángulos de vista 3D">
+        <button class="angle-btn active" data-angle="frente">👁️ Frente</button>
+        <button class="angle-btn" data-angle="perspectiva">🧊 3D</button>
+        <button class="angle-btn" data-angle="arriba">🔍 Arriba</button>
+        <button class="angle-btn" data-angle="atras">🔄 Atrás</button>
+      </div>
+
+      <!-- Escenario Interactivo con Giro 3D Libre y Animación -->
+      <div class="stage-wrapper" id="stageWrapper" title="Arrastra con el dedo o ratón para girar libremente en 3D">
+        <div class="viewport-3d">
+          <div class="scene-3d" id="paperScene">
+            <svg id="paperSvg" viewBox="0 0 380 320" role="img" aria-label="Ilustración 3D del paso">
+              <defs>
+                <marker id="foldArrow" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto">
+                  <path d="M0,0 L6,3 L0,6 Z" fill="#336948"/>
+                </marker>
+              </defs>
+              <g id="drawingGroup"></g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="stage-footer">
+          <button class="btn-anim" id="animateFoldBtn">
+            <span>▶</span> Ver cómo se dobla
+          </button>
+          <button class="btn-center" id="resetAngleBtn" title="Restablecer posición de frente">
+            ↺ Centrar vista
+          </button>
+        </div>
       </div>
 
       <div class="step-content">
@@ -351,6 +464,14 @@
     ];
 
     let actual = 0;
+    let rotX = 0;
+    let rotY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let animProgress = 0;
+    let animTimer = null;
+
     const stepChip = document.getElementById("stepChip");
     const progressFill = document.getElementById("progressFill");
     const stepTitle = document.getElementById("stepTitle");
@@ -359,6 +480,11 @@
     const btnPrev = document.getElementById("btnPrev");
     const btnNext = document.getElementById("btnNext");
     const drawingGroup = document.getElementById("drawingGroup");
+    const paperScene = document.getElementById("paperScene");
+    const stageWrapper = document.getElementById("stageWrapper");
+    const angleButtons = document.querySelectorAll(".angle-btn");
+    const resetAngleBtn = document.getElementById("resetAngleBtn");
+    const animateFoldBtn = document.getElementById("animateFoldBtn");
 
     const ns = "http://www.w3.org/2000/svg";
 
@@ -382,10 +508,11 @@
         const my = (y1 + y2) / 2 + labelYOffset;
         const width = label.length * 6.5 + 16;
         drawingGroup.appendChild(el("rect", {
-          x: mx - width / 2, y: my - 10, width, height: 18, rx: 9, class: "fold-tag-bg"
+          x: mx - width / 2, y: my - 10, width, height: 18, rx: 9, fill: "#d9383a"
         }));
         drawingGroup.appendChild(el("text", {
-          x: mx, y: my + 3, "text-anchor": "middle", class: "fold-tag"
+          x: mx, y: my + 3, "text-anchor": "middle", fill: "#ffffff",
+          "font-size": "10.5", "font-weight": "800", "font-family": "system-ui"
         }, label));
       }
     }
@@ -408,8 +535,8 @@
       }
     }
 
-    /* ── Renderizado de Ilustraciones SVG Precisas y Derechas ── */
-    function drawPaperModel(stepIndex) {
+    /* ── Renderizado SVG con Soporte de Animación ── */
+    function drawPaperModel(stepIndex, t = 0) {
       clearDrawing();
 
       const mamey = "#e8734a";
@@ -418,36 +545,44 @@
       const borde = "#382315";
       const verde = "#336948";
 
-      // Sombra en la mesa
+      // Sombra proyectada en la mesa
       drawingGroup.appendChild(el("ellipse", {
         cx: 190, cy: 290, rx: 110, ry: 14, fill: "#543d2c", opacity: "0.1"
       }));
 
       if (stepIndex === 0) {
-        // PASO 1: Diamante que se dobla hacia arriba
-        // Mitad superior
+        // PASO 1
         drawingGroup.appendChild(el("polygon", {
           points: "190,40 310,160 70,160",
           fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
-        // Mitad inferior
-        drawingGroup.appendChild(el("polygon", {
-          points: "70,160 310,160 190,280",
-          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
-        }));
 
-        drawFoldLine(70, 160, 310, 160, "Línea de pliegue");
-        drawArrow(190, 260, 190, 80, 165, 170, "Lleva la punta arriba");
+        if (t > 0) {
+          drawingGroup.appendChild(el("polygon", {
+            points: "70,160 310,160 190,280",
+            fill: "rgba(255,255,255,0.7)", class: "ghost-line"
+          }));
+          const curY = 280 - (280 - 40) * t;
+          drawingGroup.appendChild(el("polygon", {
+            points: `70,160 310,160 190,${curY}`,
+            fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+          }));
+        } else {
+          drawingGroup.appendChild(el("polygon", {
+            points: "70,160 310,160 190,280",
+            fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+          }));
+          drawFoldLine(70, 160, 310, 160, "Línea de pliegue");
+          drawArrow(190, 260, 190, 80, 165, 170, "Lleva la punta arriba");
+        }
 
       } else if (stepIndex === 1) {
-        // PASO 2: Triángulo base. Punta derecha doblándose a la izquierda.
-        // Triángulo base
+        // PASO 2
         drawingGroup.appendChild(el("polygon", {
           points: "190,40 70,160 310,160",
           fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
-        // Borde superior horizontal de referencia
         drawingGroup.appendChild(el("line", {
           x1: 115, y1: 115, x2: 265, y2: 115,
           stroke: verde, "stroke-width": "2", "stroke-dasharray": "4 4", opacity: "0.8"
@@ -457,29 +592,30 @@
           fill: verde, "font-size": "9.5", "font-weight": "800"
         }, "— El borde de arriba queda completamente recto —"));
 
-        // Espacio que deja la esquina derecha al levantarse (reverso blanco)
         drawingGroup.appendChild(el("polygon", {
           points: "160,160 265,115 310,160",
           fill: "rgba(255,255,255,0.75)", class: "ghost-line"
         }));
 
-        // Solapa doblada hacia la izquierda (frente mamey con borde blanco)
+        const targetX = 310 - (310 - 115) * t;
+        const targetY = 160 - (160 - 115) * t;
         drawingGroup.appendChild(el("polygon", {
-          points: "160,160 265,115 115,115",
+          points: `160,160 265,115 ${targetX},${targetY}`,
           fill: mameyOscuro, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
-        drawFoldLine(160, 160, 265, 115);
-        drawArrow(290, 150, 125, 120, 210, 85, "Hacia el borde izquierdo");
+        if (t === 0) {
+          drawFoldLine(160, 160, 265, 115);
+          drawArrow(290, 150, 125, 120, 210, 85, "Hacia el borde izquierdo");
+        }
 
       } else if (stepIndex === 2) {
-        // PASO 3: Punta izquierda cruzándose hacia la derecha
+        // PASO 3
         drawingGroup.appendChild(el("polygon", {
           points: "190,40 70,160 310,160",
           fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
-        // Espacios libres que dejaron los dos lados
         drawingGroup.appendChild(el("polygon", {
           points: "160,160 265,115 310,160",
           fill: "rgba(255,255,255,0.75)", class: "ghost-line"
@@ -489,93 +625,93 @@
           fill: "rgba(255,255,255,0.75)", class: "ghost-line"
         }));
 
-        // Primera solapa (debajo)
         drawingGroup.appendChild(el("polygon", {
           points: "160,160 265,115 115,115",
           fill: mameyOscuro, stroke: borde, "stroke-width": "2", "stroke-linejoin": "round"
         }));
 
-        // Segunda solapa cruzada por encima
+        const targetX = 70 + (265 - 70) * t;
+        const targetY = 160 - (160 - 115) * t;
         drawingGroup.appendChild(el("polygon", {
-          points: "220,160 115,115 265,115",
+          points: `220,160 115,115 ${targetX},${targetY}`,
           fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
-        drawFoldLine(220, 160, 115, 115);
-        drawArrow(85, 150, 255, 120, 170, 85, "Cruza hacia la derecha");
+        if (t === 0) {
+          drawFoldLine(220, 160, 115, 115);
+          drawArrow(85, 150, 255, 120, 170, 85, "Cruza hacia la derecha");
+        }
 
       } else if (stepIndex === 3) {
-        // PASO 4: DOS PUNTAS. Doblar SOLO LA DE ADELANTE en el bolsillo.
-        // Cuerpo inferior del vaso
+        // PASO 4
         drawingGroup.appendChild(el("polygon", {
           points: "115,115 265,115 220,160 160,160",
           fill: mameyOscuro, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
-        // PUNTA TRASERA: se queda erguida arriba (mostrando reverso blanco)
         drawingGroup.appendChild(el("polygon", {
           points: "115,115 190,40 265,115",
           fill: blanco, stroke: borde, "stroke-width": "2.2", "stroke-linejoin": "round"
         }));
 
-        // Etiqueta indicando que son dos puntas
         drawingGroup.appendChild(el("text", {
           x: 190, y: 22, "text-anchor": "middle",
           fill: "#5a4b3d", "font-size": "10.5", "font-weight": "800"
         }, "Arriba hay 2 puntas: toma solo la del frente"));
 
-        // Solapa delantera doblándose hacia el bolsillo
+        const curY = 40 + (165 - 40) * t;
         drawingGroup.appendChild(el("polygon", {
-          points: "115,115 265,115 190,165",
+          points: `115,115 265,115 190,${curY}`,
           fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
-        drawFoldLine(115, 115, 265, 115, "Doblar hacia ti");
-        drawArrow(190, 55, 190, 150, 215, 100, "Al bolsillo");
+        if (t === 0) {
+          drawFoldLine(115, 115, 265, 115, "Doblar hacia ti");
+          drawArrow(190, 55, 190, 150, 215, 100, "Al bolsillo");
+        }
 
       } else if (stepIndex === 4) {
-        // PASO 5: Voltear y doblar la otra punta por detrás
+        // PASO 5
         drawingGroup.appendChild(el("text", {
           x: 190, y: 24, "text-anchor": "middle",
           fill: verde, "font-size": "11.5", "font-weight": "800"
         }, "🔄 Voltea el vaso hacia la espalda"));
 
-        // Cuerpo trasero del vaso
         drawingGroup.appendChild(el("polygon", {
           points: "115,115 265,115 220,160 160,160",
           fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
-        // Punta trasera doblada hacia abajo por detrás
+        const curY = 40 + (165 - 40) * t;
         drawingGroup.appendChild(el("polygon", {
-          points: "115,115 265,115 190,165",
+          points: `115,115 265,115 190,${curY}`,
           fill: mameyOscuro, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
-        drawFoldLine(115, 115, 265, 115);
-        drawArrow(190, 55, 190, 145, 165, 100, "Dobla hacia abajo pegada al vaso");
+        if (t === 0) {
+          drawFoldLine(115, 115, 265, 115);
+          drawArrow(190, 55, 190, 145, 165, 100, "Dobla hacia abajo pegada al vaso");
+        }
 
       } else if (stepIndex === 5) {
-        // PASO 6: Abrir el vaso apretando los lados
-        // Vaso tridimensional abierto
+        // PASO 6
         drawingGroup.appendChild(el("polygon", {
           points: "115,115 265,115 220,180 160,180",
           fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
-        // Boca abierta del vaso
+        const rx = 10 + (75 - 10) * t;
+        const ry = 4 + (20 - 4) * t;
+
         drawingGroup.appendChild(el("ellipse", {
-          cx: 190, cy: 115, rx: 75, ry: 20,
+          cx: 190, cy: 115, rx, ry,
           fill: "#5a2d18", stroke: borde, "stroke-width": "2.5"
         }));
-        drawingGroup.appendChild(el("ellipse", {
-          cx: 190, cy: 115, rx: 65, ry: 14,
-          fill: "#844224", opacity: "0.8"
-        }));
 
-        // Flechas laterales presionando
-        drawArrow(90, 145, 125, 145, 107, 135, "Aprieta");
-        drawArrow(290, 145, 255, 145, 273, 135, "Aprieta");
+        if (t === 0) {
+          drawArrow(90, 145, 125, 145, 107, 135, "Aprieta");
+          drawArrow(290, 145, 255, 145, 273, 135, "Aprieta");
+        }
 
         drawingGroup.appendChild(el("text", {
           x: 190, y: 220, "text-anchor": "middle",
@@ -583,6 +719,88 @@
         }, "🎉 ¡El vaso está abierto y listo!"));
       }
     }
+
+    /* ── Controles 3D y Giro Libre ── */
+    function updateTransform(smooth = false) {
+      if (smooth) paperScene.classList.add("smooth-preset");
+      else paperScene.classList.remove("smooth-preset");
+      paperScene.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    }
+
+    const anglePresets = {
+      frente: { x: 0, y: 0 },
+      perspectiva: { x: 22, y: -26 },
+      arriba: { x: 62, y: 0 },
+      atras: { x: 0, y: 180 }
+    };
+
+    angleButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        angleButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const angle = btn.getAttribute("data-angle");
+        if (anglePresets[angle]) {
+          rotX = anglePresets[angle].x;
+          rotY = anglePresets[angle].y;
+          updateTransform(true);
+        }
+      });
+    });
+
+    resetAngleBtn.addEventListener("click", () => {
+      angleButtons.forEach(b => b.classList.remove("active"));
+      document.querySelector('[data-angle="frente"]').classList.add("active");
+      rotX = 0;
+      rotY = 0;
+      updateTransform(true);
+    });
+
+    stageWrapper.addEventListener("pointerdown", (e) => {
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      paperScene.classList.remove("smooth-preset");
+      stageWrapper.setPointerCapture(e.pointerId);
+    });
+
+    stageWrapper.addEventListener("pointermove", (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      rotY += dx * 0.7;
+      rotX -= dy * 0.7;
+      rotX = Math.max(-65, Math.min(75, rotX));
+      startX = e.clientX;
+      startY = e.clientY;
+      updateTransform(false);
+    });
+
+    const endDrag = () => { isDragging = false; };
+    stageWrapper.addEventListener("pointerup", endDrag);
+    stageWrapper.addEventListener("pointercancel", endDrag);
+
+    /* ── Animación del Doblez ── */
+    function playFoldAnimation() {
+      if (animTimer) cancelAnimationFrame(animTimer);
+      let start = null;
+      const duration = 900;
+
+      function step(timestamp) {
+        if (!start) start = timestamp;
+        const progress = Math.min((timestamp - start) / duration, 1);
+        const ease = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        drawPaperModel(actual, ease);
+
+        if (progress < 1) {
+          animTimer = requestAnimationFrame(step);
+        } else {
+          setTimeout(() => { drawPaperModel(actual, 1); }, 300);
+        }
+      }
+      animTimer = requestAnimationFrame(step);
+    }
+
+    animateFoldBtn.addEventListener("click", playFoldAnimation);
 
     function render() {
       const p = pasos[actual];
@@ -595,8 +813,8 @@
       btnPrev.disabled = actual === 0;
       btnNext.textContent = actual === pasos.length - 1 ? "¡Completado! 🎉" : "Siguiente paso →";
 
-      // Renderizar el dibujo exacto del paso
-      drawPaperModel(actual);
+      // Render inicial plano del paso
+      drawPaperModel(actual, 0);
     }
 
     btnPrev.addEventListener("click", () => {
