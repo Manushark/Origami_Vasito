@@ -11,13 +11,15 @@
       --papel-mamey: #e8734a;
       --papel-mamey-oscuro: #c85a35;
       --papel-blanco: #ffffff;
+      --papel-blanco-borde: #d5c8b5;
       --tinta: #1d2e24;
       --suave: #536458;
       --verde: #336948;
       --verde-hover: #265237;
+      --verde-suave: #e6f3eb;
       --rojo-doblez: #d9383a;
       --borde: #e4dacb;
-      --tarjeta: #ffffff;
+      --tarjeta: #fffdfa;
       --sombra: 0 14px 36px rgba(45, 35, 25, 0.08);
       --radio: 20px;
       --font-size-base: 16px;
@@ -29,172 +31,167 @@
       scroll-behavior: smooth;
     }
     body {
-      background: var(--fondo);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(232, 115, 74, 0.1), transparent 28rem),
+        radial-gradient(circle at 90% 90%, rgba(51, 105, 72, 0.08), transparent 26rem),
+        var(--fondo);
       color: var(--tinta);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       line-height: 1.5;
       min-height: 100vh;
-      padding: 16px 12px 36px;
       display: flex;
       flex-direction: column;
-      align-items: center;
       -webkit-tap-highlight-color: transparent;
-      overflow-x: hidden;
     }
 
-    /* Confetti Canvas */
-    #confettiCanvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 100;
-    }
+    button { font: inherit; }
 
+    /* ── Contenedor Principal ── */
     .app {
-      width: min(620px, 100%);
+      width: min(1040px, calc(100% - 28px));
       margin: 0 auto;
+      padding: 16px 0 32px;
+      flex: 1;
       display: flex;
       flex-direction: column;
     }
 
-    /* Cabecera */
+    /* ── Cabecera Limpia ── */
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 4px 18px;
       gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
     }
-    .logo {
+    .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 1.5rem;
-      font-weight: 800;
+      font-weight: 900;
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
       color: var(--tinta);
-      letter-spacing: -0.02em;
     }
-    .logo-icon {
-      width: 36px;
-      height: 36px;
-      background: var(--papel-mamey);
-      border-radius: 10px;
+    .brand-mark {
+      width: 40px;
+      height: 40px;
       display: grid;
       place-items: center;
+      background: linear-gradient(135deg, var(--papel-mamey), var(--papel-mamey-oscuro));
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(232, 115, 74, 0.3);
       color: white;
-      font-size: 1.2rem;
-      box-shadow: 0 4px 10px rgba(232, 115, 74, 0.25);
     }
+    .brand-mark svg { width: 24px; height: 24px; }
+
     .header-actions {
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .btn-font {
-      background: #fdfaf5;
-      border: 1px solid var(--borde);
+    .pill-offline {
+      color: var(--verde);
+      background: var(--verde-suave);
+      border: 1px solid rgba(51, 105, 72, 0.2);
       border-radius: 999px;
-      padding: 6px 12px;
-      font-size: 0.85rem;
+      padding: 5px 11px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .icon-btn {
+      background: var(--tarjeta);
+      border: 1px solid var(--borde);
+      border-radius: 11px;
+      padding: 5px 10px;
+      font-size: 0.82rem;
       font-weight: 700;
-      color: var(--suave);
+      color: var(--tinta);
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 5px;
-      transition: all 0.15s ease;
+      transition: background 0.15s;
     }
-    .btn-font:hover {
-      background: #eee4d7;
-      color: var(--tinta);
-    }
-    .pill-offline {
-      background: #e6f3eb;
-      color: var(--verde);
-      font-size: 0.85rem;
-      font-weight: 700;
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(51, 105, 72, 0.2);
-    }
+    .icon-btn:hover { background: #f4ecdf; }
 
-    /* Introducción */
+    /* ── Título Sencillo ── */
     .intro {
-      margin-bottom: 16px;
-      padding: 0 4px;
+      text-align: center;
+      margin: 0 auto 18px;
+      max-width: 620px;
     }
-    .intro h1 {
-      font-size: clamp(1.6rem, 5vw, 2.1rem);
-      line-height: 1.2;
-      font-weight: 800;
+    h1 {
+      font-size: clamp(1.7rem, 3.8vw, 2.3rem);
+      line-height: 1.12;
+      letter-spacing: -0.035em;
       margin-bottom: 6px;
-      letter-spacing: -0.02em;
+      font-weight: 900;
     }
     .intro p {
       color: var(--suave);
-      font-size: 1.05rem;
+      font-size: 0.98rem;
     }
 
-    /* Tarjeta Principal */
-    .card {
+    /* ── Área de Trabajo ── */
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.95fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .visual-card, .instruction-card {
       background: var(--tarjeta);
-      border-radius: var(--radio);
       border: 1px solid var(--borde);
+      border-radius: var(--radio);
       box-shadow: var(--sombra);
-      padding: 24px 20px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
 
-    /* Progreso */
-    .progress-header {
+    /* ── Tarjeta Visual (Escenario de Papel) ── */
+    .visual-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      padding: 12px 18px;
+      background: #faf6ef;
+      border-bottom: 1px solid rgba(228, 218, 203, 0.7);
     }
     .step-chip {
-      background: rgba(232, 115, 74, 0.12);
-      color: var(--papel-mamey-oscuro);
-      font-size: 0.9rem;
+      background: #fbeee2;
+      color: #9c4c23;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+    .angle-hint {
+      font-size: 0.76rem;
       font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 8px;
-    }
-    .progress-bar {
-      height: 8px;
-      background: #ede5da;
-      border-radius: 999px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-    .progress-fill {
-      height: 100%;
-      width: 16.666%;
-      background: linear-gradient(90deg, var(--papel-mamey), #f4a261);
-      border-radius: 999px;
-      transition: width 0.3s ease;
+      color: var(--suave);
     }
 
-    /* Barra de Ángulos 3D */
+    /* Barra de selección de ángulos 3D limpia */
     .angle-bar {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       gap: 6px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
+      padding: 10px 14px;
+      background: #fdfaf4;
+      border-bottom: 1px solid var(--borde);
     }
     .angle-btn {
-      flex: 1;
-      min-width: 65px;
-      background: #f7efe4;
-      border: 1px solid #e2d4c3;
+      background: var(--tarjeta);
+      border: 1.5px solid var(--borde);
       border-radius: 10px;
-      padding: 8px 6px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--suave);
+      padding: 6px 4px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--tinta);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -203,376 +200,631 @@
       transition: all 0.15s ease;
     }
     .angle-btn:hover {
-      background: #ede1d2;
-      color: var(--tinta);
+      background: #fff5ec;
+      border-color: var(--papel-mamey);
     }
     .angle-btn.active {
-      background: var(--tinta);
-      color: #ffffff;
-      border-color: var(--tinta);
+      background: var(--papel-mamey);
+      border-color: var(--papel-mamey-oscuro);
+      color: white;
     }
 
-    /* Escenario Interactivo 3D */
-    .stage-wrapper {
-      background: #faf6ef;
-      border: 1px solid #ebd9c5;
-      border-radius: 16px;
-      min-height: 290px;
+    /* Escenario 3D */
+    .paper-stage-wrapper {
+      position: relative;
+      flex: 1;
+      min-height: 330px;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      position: relative;
-      overflow: hidden;
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,0.95), rgba(246,240,230,0.5));
       cursor: grab;
       user-select: none;
       touch-action: none;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+      overflow: hidden;
     }
-    .stage-wrapper:active {
-      cursor: grabbing;
-    }
-    .viewport-3d {
-      perspective: 1100px;
+    .paper-stage-wrapper:active { cursor: grabbing; }
+
+    .paper-viewport {
+      perspective: 900px;
       width: 100%;
-      height: 250px;
-      display: grid;
-      place-items: center;
-    }
-    .scene-3d {
-      transform-style: preserve-3d;
-      transition: transform 0.1s ease-out;
-      width: 100%;
-      max-width: 380px;
-      height: 250px;
-      display: grid;
-      place-items: center;
-    }
-    .scene-3d.smooth-preset {
-      transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    #paperSvg {
-      width: 100%;
-      max-width: 380px;
-      height: 250px;
-      display: block;
-      overflow: visible;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
     }
 
-    /* Barra inferior del escenario: Botón de Animación y Centrar */
-    .stage-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .paper-scene {
+      width: min(100%, 390px);
+      aspect-ratio: 1.15 / 1;
+      transform-style: preserve-3d;
+      transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+      display: grid;
+      place-items: center;
+    }
+    .paper-scene.is-dragging {
+      transition: none !important;
+    }
+
+    #paperSvg {
       width: 100%;
-      padding: 8px 12px;
-      background: rgba(247, 239, 228, 0.7);
-      border-top: 1px solid #ebd9c5;
-      z-index: 2;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 14px 18px rgba(60, 45, 30, 0.13));
+    }
+
+    /* Estilo de Líneas de Doblez */
+    .fold-line {
+      stroke: var(--rojo-doblez);
+      stroke-width: 3.5;
+      stroke-dasharray: 8 5;
+      stroke-linecap: round;
+      animation: dashMove 1.5s linear infinite;
+    }
+    .fold-line-glow {
+      stroke: rgba(217, 56, 58, 0.25);
+      stroke-width: 9;
+      stroke-linecap: round;
+    }
+    @keyframes dashMove {
+      to { stroke-dashoffset: -26; }
+    }
+
+    .fold-tag {
+      font-size: 10.5px;
+      font-weight: 800;
+      fill: #fff;
+    }
+    .fold-tag-bg {
+      fill: var(--rojo-doblez);
+    }
+
+    .ghost-line {
+      stroke: #baa793;
+      stroke-width: 2;
+      stroke-dasharray: 5 4;
+    }
+
+    /* Controles inferiores del escenario */
+    .stage-bottom-bar {
+      padding: 10px 16px;
+      background: #faf6ef;
+      border-top: 1px solid var(--borde);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     }
     .btn-anim {
-      background: var(--verde);
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
+      background: var(--verde-suave);
+      border: 1.5px solid rgba(51, 105, 72, 0.3);
+      color: var(--verde);
+      border-radius: 999px;
       padding: 6px 14px;
-      font-size: 0.85rem;
-      font-weight: 700;
+      font-size: 0.8rem;
+      font-weight: 800;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 2px 6px rgba(51, 105, 72, 0.2);
-      transition: background-color 0.15s;
+      transition: all 0.15s;
     }
     .btn-anim:hover {
-      background: var(--verde-hover);
+      background: var(--verde);
+      color: white;
     }
-    .btn-anim:active {
-      transform: scale(0.96);
+    .btn-anim.active {
+      background: var(--verde);
+      color: white;
     }
+
     .btn-center {
-      background: transparent;
-      border: 1px solid #d8c7b4;
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 0.82rem;
+      background: var(--tarjeta);
+      border: 1px solid var(--borde);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 0.76rem;
       font-weight: 700;
       color: var(--suave);
       cursor: pointer;
     }
-    .btn-center:hover {
-      background: #eee3d5;
-      color: var(--tinta);
+    .btn-center:hover { background: #f0e8dc; }
+
+    .visual-caption {
+      padding: 11px 16px;
+      text-align: center;
+      color: var(--suave);
+      font-size: 0.86rem;
+      background: var(--tarjeta);
+      border-top: 1px solid rgba(228, 218, 203, 0.4);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Estilos SVG */
-    .fold-line {
-      stroke: var(--rojo-doblez);
-      stroke-width: 2.5;
-      stroke-dasharray: 6 5;
-      stroke-linecap: round;
-    }
-    .fold-line-glow {
-      stroke: rgba(217, 56, 58, 0.3);
-      stroke-width: 6;
-      stroke-linecap: round;
-    }
-    .ghost-line {
-      stroke: #a08c79;
-      stroke-width: 1.8;
-      stroke-dasharray: 4 4;
+    /* ── Tarjeta de Instrucciones ── */
+    .instruction-card {
+      padding: clamp(18px, 3.4vw, 28px);
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Textos del Paso */
-    .step-content {
-      margin: 18px 0 24px;
-    }
-    .step-title {
-      font-size: 1.35rem;
+    .progress-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: var(--suave);
+      font-size: 0.82rem;
       font-weight: 800;
-      line-height: 1.25;
-      margin-bottom: 10px;
-      color: var(--tinta);
     }
-    .step-instruction {
-      font-size: 1.1rem;
-      line-height: 1.55;
-      color: #2a3d32;
-      margin-bottom: 14px;
+    .progress-track {
+      height: 8px;
+      border-radius: 999px;
+      background: #ebd8c5;
+      overflow: hidden;
+      margin-bottom: 12px;
     }
-    .tip-card {
-      background: #fbf5ed;
+    .progress-fill {
+      height: 100%;
+      width: 16.666%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--verde), #549b6f);
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .step-dots {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .step-dot {
+      flex: 1;
+      height: 7px;
+      border-radius: 999px;
+      background: #e6dacb;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .step-dot.active {
+      background: var(--papel-mamey);
+      transform: scaleY(1.4);
+    }
+    .step-dot.done {
+      background: var(--verde);
+    }
+
+    .step-kicker {
+      color: #b05c32;
+      font-size: 0.8rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    h2 {
+      font-size: clamp(1.4rem, 2.6vw, 1.95rem);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+      font-weight: 900;
+    }
+    #instruction {
+      color: #38493f;
+      font-size: 1.05rem;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    #instruction strong {
+      color: #172b1e;
+    }
+
+    .check-box {
+      background: #fbf7f0;
       border-left: 4px solid var(--papel-mamey);
-      border-radius: 10px;
+      border-radius: 0 12px 12px 0;
+      padding: 10px 14px;
+      color: #523f31;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .tip {
+      background: var(--verde-suave);
+      border-radius: 14px;
       padding: 12px 14px;
-      font-size: 0.95rem;
-      color: #5a4b3d;
-      line-height: 1.45;
+      color: #274734;
+      font-size: 0.88rem;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 20px;
     }
-    .tip-card strong {
-      color: var(--papel-mamey-oscuro);
-    }
+    .tip-icon { font-size: 1.1rem; line-height: 1; }
 
     /* Botones de Navegación */
     .nav-buttons {
       display: flex;
-      gap: 12px;
+      gap: 10px;
+      margin-top: auto;
+      padding-top: 10px;
     }
     .btn {
-      flex: 1;
-      min-height: 54px;
-      border-radius: 14px;
-      font-size: 1.05rem;
-      font-weight: 800;
+      min-height: 52px;
+      border: 0;
+      border-radius: 15px;
+      padding: 12px 20px;
+      font-weight: 900;
+      font-size: 0.98rem;
       cursor: pointer;
-      border: none;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: transform 0.15s, background-color 0.15s, box-shadow 0.15s;
+      transition: transform 0.15s, background 0.15s, box-shadow 0.15s, opacity 0.15s;
     }
-    .btn:active {
-      transform: scale(0.98);
-    }
-    .btn-prev {
-      background: #f0e7db;
-      color: var(--tinta);
-      border: 1px solid var(--borde);
-    }
-    .btn-prev:hover:not(:disabled) {
-      background: #e6dcce;
-    }
-    .btn-next {
-      background: var(--verde);
-      color: white;
-      box-shadow: 0 4px 12px rgba(51, 105, 72, 0.25);
-    }
-    .btn-next:hover:not(:disabled) {
-      background: var(--verde-hover);
-    }
+    .btn:active { transform: translateY(1.5px); }
     .btn:disabled {
-      opacity: 0.4;
+      opacity: 0.35;
       cursor: not-allowed;
-      box-shadow: none;
+      transform: none;
     }
+    .btn-secondary {
+      color: var(--tinta);
+      background: #ede4d6;
+    }
+    .btn-secondary:not(:disabled):hover { background: #e3d8c8; }
+    .btn-primary {
+      color: white;
+      background: var(--verde);
+      flex: 1;
+      box-shadow: 0 5px 16px rgba(51, 105, 72, 0.25);
+    }
+    .btn-primary:hover { background: var(--verde-hover); }
 
-    /* Modal / Banner de Felicitación Final */
-    .celebration-banner {
+    /* Pantalla Final */
+    .finish-panel {
       display: none;
-      background: #e6f3eb;
-      border: 2px solid var(--verde);
-      border-radius: 14px;
-      padding: 14px;
       text-align: center;
-      margin-bottom: 18px;
-      animation: popIn 0.35s ease;
+      padding: 10px 0;
     }
-    .celebration-banner.show {
-      display: block;
+    .finish-panel.visible { display: block; }
+    .finish-emoji {
+      font-size: 3.5rem;
+      margin-bottom: 8px;
+      animation: bounce 1.8s infinite ease-in-out;
     }
-    .celebration-banner h3 {
-      font-size: 1.25rem;
-      color: var(--verde-hover);
-      margin-bottom: 4px;
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
     }
-    .celebration-banner p {
-      font-size: 0.95rem;
-      color: #294734;
+    .checklist-card {
+      background: #faf6ef;
+      border: 1px dashed #d6c7b2;
+      border-radius: 14px;
+      padding: 14px 16px;
+      text-align: left;
+      margin: 16px 0 20px;
+    }
+    .checklist-card h4 {
+      font-size: 0.88rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .checklist-card ul {
+      list-style: none;
+      font-size: 0.85rem;
+      color: var(--suave);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .checklist-card li span.check { color: var(--verde); font-weight: 900; }
+
+    #confettiCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 999;
     }
 
-    @keyframes popIn {
-      from { transform: scale(0.92); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+    .bottom-note {
+      text-align: center;
+      color: var(--suave);
+      font-size: 0.82rem;
+      margin-top: 16px;
+    }
+
+    /* ── Adaptabilidad ── */
+    @media (max-width: 800px) {
+      .app { width: calc(100% - 20px); padding-top: 10px; }
+      .workspace { grid-template-columns: 1fr; gap: 14px; }
+      .paper-stage-wrapper { min-height: 280px; }
+      .instruction-card { padding: 20px 18px; }
+    }
+    @media (max-width: 420px) {
+      .brand { font-size: 1.2rem; }
+      .brand-mark { width: 36px; height: 36px; }
+      .angle-btn { font-size: 0.72rem; padding: 5px 2px; }
+      .nav-buttons { flex-direction: column-reverse; }
+      .nav-buttons .btn { width: 100%; }
     }
   </style>
 </head>
 <body>
   <canvas id="confettiCanvas"></canvas>
 
-  <div class="app">
+  <main class="app">
+    <!-- Header -->
     <header>
-      <div class="logo">
-        <div class="logo-icon">🥤</div>
+      <div class="brand" aria-label="Vasito, inicio">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M5 7h22l-3 20H8L5 7Z" fill="#fff5ea" stroke="#1d2e24" stroke-width="2" stroke-linejoin="round"/>
+            <path d="m5 7 11 8L27 7" stroke="#1d2e24" stroke-width="2" stroke-linejoin="round"/>
+            <path d="m16 15 0 12" stroke="#1d2e24" stroke-width="1.6" stroke-dasharray="2.5 2.5"/>
+          </svg>
+        </span>
         Vasito
       </div>
+
       <div class="header-actions">
-        <button class="btn-font" id="fontToggleBtn" title="Cambiar tamaño de letra">
-          <span>🔤</span> <span id="fontBtnText">Letra grande</span>
+        <button class="icon-btn" id="fontBtn" title="Agrandar letra">
+          <span>🔤</span> Letra grande
         </button>
         <span class="pill-offline">● Sin internet</span>
       </div>
     </header>
 
+    <!-- Intro -->
     <section class="intro">
       <h1>Una hoja, un vaso.<br>¡Tú puedes!</h1>
       <p>Sigue cada doblez paso a paso. Gira el papel en 3D para entenderlo con claridad.</p>
     </section>
 
-    <main class="card" aria-label="Instrucciones paso a paso">
-      <div class="progress-header">
-        <span class="step-chip" id="stepChip">Paso 1 de 6</span>
-      </div>
+    <!-- Workspace -->
+    <section class="workspace" aria-label="Tutorial de origami">
+      <!-- Tarjeta Visual -->
+      <div class="visual-card">
+        <div class="visual-top">
+          <span class="step-chip" id="visualStepChip">Paso 1 de 6</span>
+          <span class="angle-hint">GIRA EN 3D O ELIGE VISTA:</span>
+        </div>
 
-      <div class="progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
+        <!-- Botones de Ángulo -->
+        <div class="angle-bar" role="radiogroup" aria-label="Ángulo del papel">
+          <button class="angle-btn active" data-angle="frente" id="btnAngleFrente">
+            <span>👁️</span> Frente
+          </button>
+          <button class="angle-btn" data-angle="perspectiva" id="btnAngle3D">
+            <span>🧊</span> 3D
+          </button>
+          <button class="angle-btn" data-angle="arriba" id="btnAngleArriba">
+            <span>🔍</span> Arriba
+          </button>
+          <button class="angle-btn" data-angle="reverso" id="btnAngleReverso">
+            <span>🔄</span> Atrás
+          </button>
+        </div>
 
-      <!-- Barra de Botones de Ángulo 3D -->
-      <div class="angle-bar" role="group" aria-label="Ángulos de vista 3D">
-        <button class="angle-btn active" data-angle="frente">👁️ Frente</button>
-        <button class="angle-btn" data-angle="perspectiva">🧊 3D</button>
-        <button class="angle-btn" data-angle="arriba">🔍 Arriba</button>
-        <button class="angle-btn" data-angle="atras">🔄 Atrás</button>
-      </div>
-
-      <!-- Escenario Interactivo con Giro 3D Libre y Animación -->
-      <div class="stage-wrapper" id="stageWrapper" title="Arrastra con el dedo o ratón para girar libremente en 3D">
-        <div class="viewport-3d">
-          <div class="scene-3d" id="paperScene">
-            <svg id="paperSvg" viewBox="0 0 380 320" role="img" aria-label="Ilustración 3D del paso">
-              <defs>
-                <marker id="foldArrow" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto">
-                  <path d="M0,0 L6,3 L0,6 Z" fill="#336948"/>
-                </marker>
-              </defs>
-              <g id="drawingGroup"></g>
-            </svg>
+        <!-- Escenario de Papel con Rotación 3D -->
+        <div class="paper-stage-wrapper" id="stageWrapper" title="Arrastra con el dedo o ratón para girar libremente en 3D">
+          <div class="paper-viewport">
+            <div class="paper-scene" id="paperScene">
+              <svg id="paperSvg" viewBox="0 0 380 340" role="img" aria-label="Papel de origami">
+                <defs>
+                  <marker id="foldArrow" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto">
+                    <path d="M0,0 L6,3 L0,6 Z" fill="#336948"/>
+                  </marker>
+                  <filter id="shadowFlap" x="-25%" y="-25%" width="150%" height="150%">
+                    <feDropShadow dx="0" dy="4" stdDeviation="3.5" flood-color="#402816" flood-opacity="0.22"/>
+                  </filter>
+                  <filter id="shadowStage" x="-20%" y="-20%" width="150%" height="150%">
+                    <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#543c29" flood-opacity="0.16"/>
+                  </filter>
+                </defs>
+                <g id="drawingGroup"></g>
+              </svg>
+            </div>
           </div>
         </div>
 
-        <div class="stage-footer">
+        <!-- Barra inferior del escenario -->
+        <div class="stage-bottom-bar">
           <button class="btn-anim" id="animateFoldBtn">
-            <span>▶</span> Ver cómo se dobla
+            <span id="animIcon">▶</span> <span id="animText">Ver cómo se dobla</span>
           </button>
           <button class="btn-center" id="resetAngleBtn" title="Restablecer posición de frente">
             ↺ Centrar vista
           </button>
         </div>
+
+        <div class="visual-caption" id="visualCaption" aria-live="polite">
+          La punta de abajo sube hasta tocar la punta de arriba.
+        </div>
       </div>
 
-      <div class="step-content">
-        <div class="celebration-banner" id="celebrationBanner">
-          <h3>🎉 ¡Felicidades! Lograste tu vasito de papel</h3>
-          <p>Pruébalo con agua o úsalo para guardar pequeños objetos. ¡Gran trabajo!</p>
+      <!-- Tarjeta de Instrucciones -->
+      <article class="instruction-card">
+        <div class="progress-row">
+          <span>Tu progreso</span>
+          <span id="progressText">Paso 1 de 6</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-label="Progreso" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="step-dots" id="stepDots"></div>
+
+        <div id="stepPanel" aria-live="polite">
+          <div class="step-kicker" id="stepKicker">PASO 1 DE 6</div>
+          <h2 id="stepTitle">Prepara tu hoja</h2>
+          <p id="instruction"></p>
+          <div class="check-box" id="checkBox"></div>
+          <div class="tip">
+            <span class="tip-icon" aria-hidden="true">💡</span>
+            <span id="tipText"></span>
+          </div>
         </div>
 
-        <h2 class="step-title" id="stepTitle"></h2>
-        <p class="step-instruction" id="stepInstruction"></p>
-        <div class="tip-card" id="stepTip"></div>
-      </div>
+        <!-- Pantalla de Éxito -->
+        <div class="finish-panel" id="finishPanel" aria-live="polite">
+          <div class="finish-emoji" aria-hidden="true">🥤🎉</div>
+          <h2>¡Terminaste tu vaso!</h2>
+          <p>Lo lograste paso a paso con tus propias manos. ¡Quedó listo!</p>
 
-      <div class="nav-buttons">
-        <button class="btn btn-prev" id="btnPrev" disabled>← Anterior</button>
-        <button class="btn btn-next" id="btnNext">Siguiente paso →</button>
-      </div>
-    </main>
-  </div>
+          <div class="checklist-card">
+            <h4>Para tu entrevista o prueba:</h4>
+            <ul>
+              <li><span class="check">✓</span> Escribe tu nombre con bolígrafo por dentro.</li>
+              <li><span class="check">✓</span> Pruébalo con unas gotas de agua para comprobar su firmeza.</li>
+              <li><span class="check">✓</span> Si quieres, dobla otro vaso para tener práctica fresca.</li>
+            </ul>
+          </div>
+
+          <button class="btn btn-primary" id="restartButton" style="width: 100%;">
+            ↺ Doblar otro vaso desde el principio
+          </button>
+        </div>
+
+        <!-- Navegación -->
+        <div class="nav-buttons" id="navButtons">
+          <button class="btn btn-secondary" id="prevButton" disabled aria-label="Paso anterior">
+            ← Anterior
+          </button>
+          <button class="btn btn-primary" id="nextButton" aria-label="Siguiente paso">
+            Siguiente paso →
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <p class="bottom-note">
+      💡 Arrastra sobre el dibujo para girarlo en 3D. Las líneas rojas punteadas te muestran exactamente por dónde doblar.
+    </p>
+  </main>
 
   <script>
     "use strict";
 
+    /* ── Datos de los 6 Pasos con Diferenciación Explícita de las Dos Puntas ── */
     const pasos = [
       {
-        titulo: "Paso 1: Dobla la hoja por la mitad",
-        instruccion: "Pon la hoja como un diamante (una punta arriba y otra abajo). Lleva la punta de abajo hasta la punta de arriba para formar un triángulo.",
-        consejo: "Alinea bien las puntas antes de aplastar el pliegue con los dedos."
+        titulo: "Dobla la hoja por la mitad",
+        instruccion: "Pon la hoja cuadrada con el lado mamey (naranja) hacia arriba, orientada como un diamante (una punta arriba y otra abajo). <strong>Lleva la punta de abajo hasta la punta de arriba</strong> para formar un triángulo.",
+        comprobacion: "✓ Al doblar la mitad inferior hacia arriba, la parte de abajo queda vacía y arriba se forma un triángulo con la base horizontal.",
+        consejo: "Alinea bien las puntas antes de presionar con la uña sobre la línea de doblez.",
+        pieFrente: "La punta inferior sube hasta tocar la punta superior. Abajo queda el espacio donde estaba el papel.",
+        pie3D: "En 3D puedes apreciar cómo la solapa se levanta de la mesa y se pliega hacia arriba.",
+        pieArriba: "Vista desde arriba: comprueba que las dos puntas coincidan exactamente.",
+        pieReverso: "Al voltear el papel verás la cara posterior blanca."
       },
       {
-        titulo: "Paso 2: Dobla la punta derecha hacia la izquierda",
-        instruccion: "Toma la punta de la derecha y llévala hacia el borde izquierdo. El borde superior de lo que doblaste debe quedar completamente recto y horizontal.",
-        consejo: "El borde de arriba debe verse horizontal, como una mesa recta."
+        titulo: "Dobla la punta derecha hacia la izquierda",
+        instruccion: "Con el triángulo frente a ti (con la base recta abajo), toma la punta de la derecha y <strong>dóblala hacia la izquierda</strong> hasta tocar el borde izquierdo. El borde de arriba de lo que doblaste debe quedar <strong>completamente recto y horizontal</strong>.",
+        comprobacion: "✓ La esquina derecha se levantó de su lugar y la parte superior de la solapa forma una línea plana.",
+        consejo: "Usa la línea punteada como guía: el borde superior de la solapa debe quedar paralelo a la mesa.",
+        pieFrente: "La punta derecha se pliega hacia el borde izquierdo. El borde superior queda recto.",
+        pie3D: "En 3D ves el relieve de la solapa sobre el cuerpo del triángulo.",
+        pieArriba: "Vista superior: comprueba la línea recta horizontal del borde doblado.",
+        pieReverso: "La espalda del vaso permanece lisa."
       },
       {
-        titulo: "Paso 3: Dobla la punta izquierda hacia la derecha",
-        instruccion: "Ahora toma la punta de la izquierda y crúzala hacia la derecha por encima de la anterior, llevándola hasta la esquina contraria.",
-        consejo: "Las dos solapas quedan cruzadas en el frente, una sobre la otra."
+        titulo: "Dobla la punta izquierda hacia la derecha",
+        instruccion: "Ahora toma la punta de la izquierda y <strong>dóblala hacia la derecha</strong>, cruzándola por encima de la solapa anterior. Llévala hasta la esquina contraria; las dos solapas quedan cruzadas en el frente.",
+        comprobacion: "✓ Ambas esquinas inferiores se doblaron y ahora forman el frente del vaso.",
+        consejo: "Asegúrate de que la segunda solapa cubra a la primera y pasa el dedo firmemente.",
+        pieFrente: "La punta izquierda cruza por encima de la derecha hasta la esquina opuesta.",
+        pie3D: "En 3D se aprecian las capas superpuestas que dan fuerza al vaso.",
+        pieArriba: "Desde arriba se puede ver el bolsillo que se forma entre las dos solapas.",
+        pieReverso: "Vista trasera: la forma de vaso ya está casi lista."
       },
       {
-        titulo: "Paso 4: Guarda la punta delantera en el bolsillo",
-        instruccion: "Arriba te quedan dos puntas sueltas. Toma solo la de adelante, bájala hacia ti y métela dentro del bolsillo frontal. Deja la otra punta arriba.",
-        consejo: "¡Ojo! Son dos puntas: dobla únicamente la de adelante, la otra se queda arriba."
+        titulo: "Mete una de las puntas en el bolsillo",
+        instruccion: "En la parte de arriba se formaron <strong>dos puntas sueltas</strong>. Toma <strong>solo una punta (la de adelante)</strong>, dóblala hacia ti hacia abajo y métela dentro del pequeño bolsillo frontal. <strong>Deja la otra punta arriba</strong> para el siguiente paso.",
+        comprobacion: "✓ La punta de adelante queda guardada dentro del bolsillo. La otra punta queda arriba esperando.",
+        consejo: "¡Ojo! Hay dos puntas: mete únicamente la capa delantera en el bolsillo frontal, no en la copa grande.",
+        pieFrente: "Mete solo la punta delantera en el bolsillo frontal. La otra punta se queda arriba.",
+        pie3D: "En 3D puedes ver cómo la solapa delantera entra en la ranura externa.",
+        pieArriba: "¡Vista clave! Observa cómo se separan las dos puntas: una baja y la otra se queda arriba.",
+        pieReverso: "Desde atrás se ve la otra punta que sigue levantada esperando el siguiente paso."
       },
       {
-        titulo: "Paso 5: Voltea el vaso y dobla la otra punta",
-        instruccion: "Dale la vuelta a todo el papel. Ahora toma la otra punta (la que dejamos arriba) y dóblala hacia abajo por detrás, pegada al vaso.",
-        consejo: "Pasa los dedos firmemente sobre el borde superior para asegurar la forma."
+        titulo: "Voltea y dobla la otra punta hacia el otro lado",
+        instruccion: "Dale la vuelta a todo el papel. Ahora toma <strong>la otra punta</strong> (la segunda que dejamos arriba) y <strong>dóblala hacia abajo hacia el otro lado</strong>, pegada contra la espalda del vaso.",
+        comprobacion: "✓ Las dos puntas ya están dobladas: una hacia adelante y la otra hacia atrás. El borde del vaso queda parejo.",
+        consejo: "Marca con fuerza este pliegue con los dedos para asegurar bien el borde del vaso.",
+        pieFrente: "El frente del vaso queda limpio con la solapa asegurada.",
+        pie3D: "Gira el vaso en 3D para confirmar que ambas caras quedaron sujetas.",
+        pieArriba: "El borde superior queda completamente recto y despejado para abrirse.",
+        pieReverso: "Vista trasera: la segunda punta doblada hacia abajo por detrás."
       },
       {
-        titulo: "Paso 6: Abre tu vasito",
-        instruccion: "Presiona suavemente los lados con los dedos para abrir la boca del vaso y separar las paredes interiores.",
-        consejo: "¡Listo! Ya tienes tu vaso de papel terminado y listo para usar."
+        titulo: "¡Abre tu vasito!",
+        instruccion: "Sujeta el papel por los lados y presiona suavemente hacia el centro. Introduce los dedos para <strong>separar las dos paredes interiores y abrir la boca del vaso</strong>. ¡Tu vaso está listo!",
+        comprobacion: "✓ El vaso tiene boca ancha circular/ovalada y profundidad para sostener cosas.",
+        consejo: "Presiona suavemente los bordes de la base para que el vaso tome cuerpo y se sostenga en pie.",
+        pieFrente: "Presiona los costados para separar las paredes interiores y abrir el vaso.",
+        pie3D: "¡Gira el vaso en 3D para mirar su interior hueco y forma terminada!",
+        pieArriba: "Vista desde arriba: la boca del vaso abierta y lista.",
+        pieReverso: "La cara posterior del vaso terminado."
       }
     ];
 
-    let actual = 0;
+    /* ── Estado de la Aplicación ── */
+    let pasoActual = 0;
+    let isAnimating = false;
+    let animProgress = 0;
+    let animFrameId = null;
+    let soundEnabled = true;
+    let largeTextEnabled = false;
+
+    // Estado 3D
     let rotX = 0;
     let rotY = 0;
-    let isDragging = false;
-    let startX = 0;
-    let startY = 0;
-    let animTimer = null;
-    let largeFont = false;
+    let zoomLevel = 1.0;
+    let currentAnglePreset = "frente";
 
-    const stepChip = document.getElementById("stepChip");
-    const progressFill = document.getElementById("progressFill");
-    const stepTitle = document.getElementById("stepTitle");
-    const stepInstruction = document.getElementById("stepInstruction");
-    const stepTip = document.getElementById("stepTip");
-    const btnPrev = document.getElementById("btnPrev");
-    const btnNext = document.getElementById("btnNext");
+    /* ── Elementos del DOM ── */
     const drawingGroup = document.getElementById("drawingGroup");
+    const stepTitle = document.getElementById("stepTitle");
+    const instruction = document.getElementById("instruction");
+    const tipText = document.getElementById("tipText");
+    const checkBox = document.getElementById("checkBox");
+    const stepKicker = document.getElementById("stepKicker");
+    const visualStepChip = document.getElementById("visualStepChip");
+    const visualCaption = document.getElementById("visualCaption");
+    const progressText = document.getElementById("progressText");
+    const progressFill = document.getElementById("progressFill");
+    const progressBar = document.getElementById("progressBar");
+    const stepDots = document.getElementById("stepDots");
+    const prevButton = document.getElementById("prevButton");
+    const nextButton = document.getElementById("nextButton");
+    const restartButton = document.getElementById("restartButton");
+    const stepPanel = document.getElementById("stepPanel");
+    const finishPanel = document.getElementById("finishPanel");
+    const navButtons = document.getElementById("navButtons");
+
     const paperScene = document.getElementById("paperScene");
     const stageWrapper = document.getElementById("stageWrapper");
     const angleButtons = document.querySelectorAll(".angle-btn");
     const resetAngleBtn = document.getElementById("resetAngleBtn");
     const animateFoldBtn = document.getElementById("animateFoldBtn");
-    const fontToggleBtn = document.getElementById("fontToggleBtn");
-    const fontBtnText = document.getElementById("fontBtnText");
-    const celebrationBanner = document.getElementById("celebrationBanner");
+    const animIcon = document.getElementById("animIcon");
+    const animText = document.getElementById("animText");
+    const fontBtn = document.getElementById("fontBtn");
     const confettiCanvas = document.getElementById("confettiCanvas");
 
+    /* ── Sin sonido (decisión de diseño: app ligera y sin distracciones) ── */
+    function playSound(_) {}
+
+    /* ── Renderizado SVG con Remoción Visible de Papel y Dos Puntas ── */
     const ns = "http://www.w3.org/2000/svg";
 
     function el(tag, attrs = {}, text = "") {
@@ -587,7 +839,9 @@
     }
 
     function drawFoldLine(x1, y1, x2, y2, label = "", labelYOffset = -14) {
+      // Halo difuminado
       drawingGroup.appendChild(el("line", { x1, y1, x2, y2, class: "fold-line-glow" }));
+      // Línea punteada animada
       drawingGroup.appendChild(el("line", { x1, y1, x2, y2, class: "fold-line" }));
 
       if (label) {
@@ -595,11 +849,10 @@
         const my = (y1 + y2) / 2 + labelYOffset;
         const width = label.length * 6.5 + 16;
         drawingGroup.appendChild(el("rect", {
-          x: mx - width / 2, y: my - 10, width, height: 18, rx: 9, fill: "#d9383a"
+          x: mx - width / 2, y: my - 10, width, height: 18, rx: 9, class: "fold-tag-bg"
         }));
         drawingGroup.appendChild(el("text", {
-          x: mx, y: my + 3, "text-anchor": "middle", fill: "#ffffff",
-          "font-size": "10.5", "font-weight": "800", "font-family": "system-ui"
+          x: mx, y: my + 3, "text-anchor": "middle", class: "fold-tag"
         }, label));
       }
     }
@@ -617,59 +870,85 @@
       if (label) {
         drawingGroup.appendChild(el("text", {
           x: midX, y: midY - 8, "text-anchor": "middle",
-          fill: "#224731", "font-size": "10.5", "font-weight": "800"
+          fill: "#224731", "font-size": "10.5", "font-weight": "800",
+          filter: "drop-shadow(0 1px 2px rgba(255,255,255,0.9))"
         }, label));
       }
     }
 
-    /* ── Renderizado SVG con Corrección de Separación y Geometría ── */
+    /* ── Dibujo del Papel por Paso con Lógica de Remoción ── */
     function drawPaperModel(stepIndex, t = 0) {
       clearDrawing();
 
       const mamey = "#e8734a";
       const mameyOscuro = "#c85a35";
+      const mameyMedio = "#db6b42";
       const blanco = "#ffffff";
-      const borde = "#382315";
+      const borde = "#472816";
       const verde = "#336948";
 
-      // Sombra en la mesa
+      // Sombra proyectada en la mesa
       drawingGroup.appendChild(el("ellipse", {
-        cx: 190, cy: 290, rx: 110, ry: 14, fill: "#543d2c", opacity: "0.1"
+        cx: 190, cy: 300, rx: 110, ry: 15, fill: "#543d2c", opacity: "0.12"
       }));
 
       if (stepIndex === 0) {
-        // PASO 1
+        // PASO 1: Diamante que sube de abajo hacia arriba
+        // La mitad superior (donde caerá el papel doblado)
         drawingGroup.appendChild(el("polygon", {
           points: "190,40 310,160 70,160",
           fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
+        // El área de abajo: al doblarse hacia arriba, se vuelve blanca/vacía (papel levantado)
         if (t > 0) {
+          // El espacio de donde se quitó la hoja queda blanco/translúcido con borde fantasma
           drawingGroup.appendChild(el("polygon", {
             points: "70,160 310,160 190,280",
             fill: "rgba(255,255,255,0.7)", class: "ghost-line"
           }));
-          const curY = 280 - (280 - 40) * t;
-          drawingGroup.appendChild(el("polygon", {
-            points: `70,160 310,160 190,${curY}`,
-            fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
-          }));
+          drawingGroup.appendChild(el("text", {
+            x: 190, y: 228, "text-anchor": "middle",
+            fill: "#8c7866", "font-size": "10", "font-weight": "700"
+          }, "— Papel levantado —"));
         } else {
+          // Antes de mover, la hoja mamey está completa
           drawingGroup.appendChild(el("polygon", {
             points: "70,160 310,160 190,280",
             fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
           }));
-          drawFoldLine(70, 160, 310, 160, "Línea de pliegue");
-          drawArrow(190, 260, 190, 80, 165, 170, "Lleva la punta arriba");
+        }
+
+        // Solapa animada que sube
+        if (t > 0) {
+          const currentY = 280 - (280 - 40) * t;
+          // Al doblar, vemos la cara blanca/reverso si pasa el punto medio
+          const flapFill = t > 0.5 ? blanco : mameyOscuro;
+          drawingGroup.appendChild(el("polygon", {
+            points: `70,160 310,160 190,${currentY}`,
+            fill: flapFill, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round",
+            filter: "url(#shadowFlap)"
+          }));
+        }
+
+        // Línea de doblez central
+        drawFoldLine(70, 160, 310, 160, "✂️ LÍNEA DE DOBLEZ", -14);
+
+        if (t === 0) {
+          drawArrow(190, 260, 190, 75, 165, 168, "Sube la punta hacia arriba");
+          drawingGroup.appendChild(el("circle", { cx: 190, cy: 280, r: 5, fill: "#fff", stroke: borde, "stroke-width": "2" }));
+          drawingGroup.appendChild(el("circle", { cx: 190, cy: 40, r: 5, fill: "#fff", stroke: verde, "stroke-width": "2" }));
         }
 
       } else if (stepIndex === 1) {
-        // PASO 2
+        // PASO 2: Triángulo base. Punta derecha doblada hacia izquierda.
+        // Triángulo base
         drawingGroup.appendChild(el("polygon", {
           points: "190,40 70,160 310,160",
           fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
+        // Borde superior horizontal de referencia
         drawingGroup.appendChild(el("line", {
           x1: 115, y1: 115, x2: 265, y2: 115,
           stroke: verde, "stroke-width": "2", "stroke-dasharray": "4 4", opacity: "0.8"
@@ -677,32 +956,44 @@
         drawingGroup.appendChild(el("text", {
           x: 190, y: 108, "text-anchor": "middle",
           fill: verde, "font-size": "9.5", "font-weight": "800"
-        }, "— El borde de arriba queda completamente recto —"));
+        }, "— Esta línea debe quedar horizontal —"));
 
+        // Área derecha levantada: se vuelve blanca con contorno fantasma
         drawingGroup.appendChild(el("polygon", {
           points: "160,160 265,115 310,160",
           fill: "rgba(255,255,255,0.75)", class: "ghost-line"
         }));
+        drawingGroup.appendChild(el("text", {
+          x: 245, y: 152, "text-anchor": "middle",
+          fill: "#8c7866", "font-size": "9", "font-weight": "700"
+        }, "Levantado"));
 
-        const targetX = 310 - (310 - 115) * t;
-        const targetY = 160 - (160 - 115) * t;
+        // Solapa doblada hacia la izquierda
+        const flapX = 310 - (310 - 115) * (t > 0 ? t : 1);
+        const flapY = 160 - (160 - 115) * (t > 0 ? t : 1);
+
         drawingGroup.appendChild(el("polygon", {
-          points: `160,160 265,115 ${targetX},${targetY}`,
-          fill: mameyOscuro, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+          points: `160,160 265,115 ${flapX},${flapY}`,
+          fill: mameyMedio, stroke: borde, "stroke-width": "2.2", "stroke-linejoin": "round",
+          filter: "url(#shadowFlap)"
         }));
 
+        drawFoldLine(265, 115, 160, 160, "✂️ LÍNEA DE DOBLEZ", 16);
+
         if (t === 0) {
-          drawFoldLine(160, 160, 265, 115);
-          drawArrow(290, 150, 125, 120, 210, 85, "Hacia el borde izquierdo");
+          drawArrow(300, 155, 125, 118, 220, 168, "Hacia la izquierda");
+          drawingGroup.appendChild(el("circle", { cx: 310, cy: 160, r: 5, fill: "#fff", stroke: borde, "stroke-width": "2" }));
+          drawingGroup.appendChild(el("circle", { cx: 115, cy: 115, r: 5, fill: "#fff", stroke: verde, "stroke-width": "2" }));
         }
 
       } else if (stepIndex === 2) {
-        // PASO 3
+        // PASO 3: Punta izquierda doblada hacia la derecha sobre la otra
         drawingGroup.appendChild(el("polygon", {
           points: "190,40 70,160 310,160",
           fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
+        // Ambos lados levantados se muestran blancos / vacíos con líneas fantasma
         drawingGroup.appendChild(el("polygon", {
           points: "160,160 265,115 310,160",
           fill: "rgba(255,255,255,0.75)", class: "ghost-line"
@@ -712,293 +1003,482 @@
           fill: "rgba(255,255,255,0.75)", class: "ghost-line"
         }));
 
+        // Primera solapa (derecha)
         drawingGroup.appendChild(el("polygon", {
           points: "160,160 265,115 115,115",
           fill: mameyOscuro, stroke: borde, "stroke-width": "2", "stroke-linejoin": "round"
         }));
 
-        const targetX = 70 + (265 - 70) * t;
-        const targetY = 160 - (160 - 115) * t;
+        // Segunda solapa (izquierda cruzando sobre la derecha)
+        const leftX = 70 + (265 - 70) * (t > 0 ? t : 1);
+        const leftY = 160 - (160 - 115) * (t > 0 ? t : 1);
+
         drawingGroup.appendChild(el("polygon", {
-          points: `220,160 115,115 ${targetX},${targetY}`,
-          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+          points: `220,160 115,115 ${leftX},${leftY}`,
+          fill: mameyMedio, stroke: borde, "stroke-width": "2.2", "stroke-linejoin": "round",
+          filter: "url(#shadowFlap)"
         }));
 
+        drawFoldLine(115, 115, 220, 160, "✂️ LÍNEA DE DOBLEZ", 16);
+
         if (t === 0) {
-          drawFoldLine(220, 160, 115, 115);
-          drawArrow(85, 150, 255, 120, 170, 85, "Cruza hacia la derecha");
+          drawArrow(80, 155, 255, 118, 160, 168, "Cruza por encima a la derecha");
+          drawingGroup.appendChild(el("circle", { cx: 70, cy: 160, r: 5, fill: "#fff", stroke: borde, "stroke-width": "2" }));
+          drawingGroup.appendChild(el("circle", { cx: 265, cy: 115, r: 5, fill: "#fff", stroke: verde, "stroke-width": "2" }));
         }
 
+        // Borde horizontal alineado
+        drawingGroup.appendChild(el("line", {
+          x1: 115, y1: 115, x2: 265, y2: 115, stroke: verde, "stroke-width": "2.5"
+        }));
+
       } else if (stepIndex === 3) {
-        // PASO 4: Sin choque de texto
+        // PASO 4: Hay DOS PUNTAS. Doblar SOLO LA PUNTA DE ADELANTE en el bolsillo.
+        // Cuerpo inferior del vaso
         drawingGroup.appendChild(el("polygon", {
           points: "115,115 265,115 220,160 160,160",
           fill: mameyOscuro, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
-        // Punta trasera (blanca erguida)
+        // LA OTRA PUNTA (SEGUNDA PUNTA / TRASERA) - SE QUEDA ARRIBA
         drawingGroup.appendChild(el("polygon", {
           points: "115,115 190,40 265,115",
           fill: blanco, stroke: borde, "stroke-width": "2.2", "stroke-linejoin": "round"
         }));
 
-        // Texto ubicado en zona despejada arriba
+        // Etiqueta clara ARRIBA del triángulo (sin estorbar la flecha)
+        drawingGroup.appendChild(el("rect", {
+          x: 105, y: 12, width: 170, height: 20, rx: 10, fill: "rgba(255,255,255,0.95)", stroke: "#c5b59e"
+        }));
         drawingGroup.appendChild(el("text", {
-          x: 190, y: 20, "text-anchor": "middle",
-          fill: "#5a4b3d", "font-size": "10.5", "font-weight": "800"
-        }, "Arriba hay 2 puntas: toma solo la del frente"));
+          x: 190, y: 26, "text-anchor": "middle",
+          fill: "#5a4535", "font-size": "10", "font-weight": "800"
+        }, "▲ LA OTRA PUNTA (se queda arriba)"));
 
-        const curY = 40 + (165 - 40) * t;
+        // Indicación a la izquierda (sin tapar el centro)
+        drawingGroup.appendChild(el("text", {
+          x: 102, y: 80, "text-anchor": "end",
+          fill: "#224731", "font-size": "10.5", "font-weight": "800"
+        }, "Punta 1 (delante)"));
+        drawingGroup.appendChild(el("text", {
+          x: 102, y: 94, "text-anchor": "end",
+          fill: "#416b52", "font-size": "9", "font-weight": "700"
+        }, "dobla hacia abajo ➔"));
+
+        // Abertura del bolsillo delantero
+        drawingGroup.appendChild(el("path", {
+          d: "M 135,120 Q 190,136 245,120",
+          fill: "none", stroke: borde, "stroke-width": "4.5", "stroke-linecap": "round"
+        }));
+        drawingGroup.appendChild(el("text", {
+          x: 190, y: 144, "text-anchor": "middle",
+          fill: "#fff", "font-size": "9.5", "font-weight": "900",
+          filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.5))"
+        }, "↓ BOLSILLO DELANTERO ↓"));
+
+        // PRIMERA PUNTA (DELANTERA) - SE DOBLA HACIA EL BOLSILLO
+        const tipY = 40 + (132 - 40) * (t > 0 ? t : 0.85);
         drawingGroup.appendChild(el("polygon", {
-          points: `115,115 265,115 190,${curY}`,
-          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+          points: `115,115 265,115 190,${tipY}`,
+          fill: mamey, stroke: borde, "stroke-width": "2.2", "stroke-linejoin": "round",
+          filter: "url(#shadowFlap)"
         }));
 
-        if (t === 0) {
-          drawFoldLine(115, 115, 265, 115, "Doblar hacia ti");
-          drawArrow(190, 50, 190, 145, 215, 95, "Al bolsillo");
-        }
+        // Línea de doblez horizontal limpia
+        drawFoldLine(115, 115, 265, 115, "");
+        // Etiqueta al extremo derecho de la línea de doblez
+        drawingGroup.appendChild(el("rect", {
+          x: 272, y: 106, width: 88, height: 18, rx: 9, class: "fold-tag-bg"
+        }));
+        drawingGroup.appendChild(el("text", {
+          x: 316, y: 119, "text-anchor": "middle", class: "fold-tag"
+        }, "✂️ Dobla aquí"));
+
+        // Flecha limpia hacia abajo en el centro
+        drawArrow(190, 46, 190, 114, 190, 80, "");
 
       } else if (stepIndex === 4) {
-        // PASO 5
+        // PASO 5: Voltear y doblar LA OTRA PUNTA hacia el otro lado
         drawingGroup.appendChild(el("text", {
-          x: 190, y: 22, "text-anchor": "middle",
-          fill: verde, "font-size": "11.5", "font-weight": "800"
-        }, "🔄 Voltea el vaso hacia la espalda"));
+          x: 190, y: 24, "text-anchor": "middle",
+          fill: "#536458", "font-size": "11.5", "font-weight": "800"
+        }, "🔄 VOLTEA EL PAPEL HACIA LA ESPALDA"));
 
+        // Cuerpo trasero del vaso
         drawingGroup.appendChild(el("polygon", {
           points: "115,115 265,115 220,160 160,160",
           fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
         }));
 
-        const curY = 40 + (165 - 40) * t;
+        // Contorno fantasma donde estaba la otra punta arriba antes de doblar
         drawingGroup.appendChild(el("polygon", {
-          points: `115,115 265,115 190,${curY}`,
-          fill: mameyOscuro, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+          points: "115,115 190,40 265,115",
+          fill: "rgba(255,255,255,0.75)", class: "ghost-line"
         }));
 
-        if (t === 0) {
-          drawFoldLine(115, 115, 265, 115);
-          drawArrow(190, 50, 190, 145, 165, 95, "Dobla hacia abajo pegada al vaso");
-        }
-
-      } else if (stepIndex === 5) {
-        // PASO 6
+        // LA OTRA PUNTA doblándose hacia abajo por la espalda
+        const backTipY = 40 + (140 - 40) * (t > 0 ? t : 0.9);
         drawingGroup.appendChild(el("polygon", {
-          points: "115,115 265,115 220,180 160,180",
-          fill: mamey, stroke: borde, "stroke-width": "2.5", "stroke-linejoin": "round"
+          points: `115,115 265,115 190,${backTipY}`,
+          fill: mameyOscuro, stroke: borde, "stroke-width": "2.2", "stroke-linejoin": "round",
+          filter: "url(#shadowFlap)"
         }));
 
-        const rx = 10 + (75 - 10) * t;
-        const ry = 4 + (20 - 4) * t;
+        drawFoldLine(115, 115, 265, 115, "✂️ DOBLA LA OTRA PUNTA AQUÍ", -14);
+        drawArrow(245, 65, 215, 125, 255, 95, "Pégala contra la espalda del vaso");
 
+      } else {
+        // PASO 6: Abrir el vaso
+        // Cuerpo exterior del vaso
+        drawingGroup.appendChild(el("path", {
+          d: "M 105,100 L 275,100 L 245,240 Q 190,265 135,240 Z",
+          fill: mamey, stroke: borde, "stroke-width": "2.8", "stroke-linejoin": "round",
+          filter: "url(#shadowStage)"
+        }));
+
+        // Boca abierta en elipse con interior hueco
         drawingGroup.appendChild(el("ellipse", {
-          cx: 190, cy: 115, rx, ry,
-          fill: "#5a2d18", stroke: borde, "stroke-width": "2.5"
+          cx: 190, cy: 100, rx: 85, ry: 26,
+          fill: "#ffd4b2", stroke: borde, "stroke-width": "2.5"
+        }));
+        drawingGroup.appendChild(el("ellipse", {
+          cx: 190, cy: 104, rx: 65, ry: 16,
+          fill: "#fff2e0", stroke: borde, "stroke-width": "1.5"
         }));
 
-        if (t === 0) {
-          drawArrow(90, 145, 125, 145, 107, 135, "Aprieta");
-          drawArrow(290, 145, 255, 145, 273, 135, "Aprieta");
-        }
+        // Pliegue central del vaso
+        drawingGroup.appendChild(el("path", {
+          d: "M 190,120 L 190,246",
+          stroke: "#b0552b", "stroke-width": "1.8", "stroke-dasharray": "5 5", opacity: "0.7"
+        }));
+
+        // Flechas laterales de presión
+        drawArrow(75, 150, 102, 145, 80, 130, "Aprieta");
+        drawArrow(305, 150, 278, 145, 300, 130, "Aprieta");
 
         drawingGroup.appendChild(el("text", {
-          x: 190, y: 220, "text-anchor": "middle",
-          fill: verde, "font-size": "13", "font-weight": "800"
-        }, "🎉 ¡El vaso está abierto y listo!"));
+          x: 190, y: 288, "text-anchor": "middle",
+          fill: verde, "font-size": "13.5", "font-weight": "900"
+        }, "✨ ¡TU VASO ESTÁ LISTO PARA USARSE! ✨"));
       }
     }
 
-    /* ── Controles 3D y Giro Libre Suave ── */
-    function updateTransform(smooth = false) {
-      if (smooth) paperScene.classList.add("smooth-preset");
-      else paperScene.classList.remove("smooth-preset");
-      paperScene.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    /* ── Renderizado del Paso ── */
+    function renderStep(playAutoAnim = false) {
+      const paso = pasos[pasoActual];
+
+      stepTitle.textContent = paso.titulo;
+      instruction.innerHTML = paso.instruccion;
+      tipText.textContent = paso.consejo;
+      checkBox.textContent = paso.comprobacion;
+      stepKicker.textContent = `PASO ${pasoActual + 1} DE ${pasos.length}`;
+      visualStepChip.textContent = `Paso ${pasoActual + 1} de ${pasos.length}`;
+
+      progressText.textContent = `Paso ${pasoActual + 1} de ${pasos.length}`;
+      progressFill.style.width = `${((pasoActual + 1) / pasos.length) * 100}%`;
+      progressBar.setAttribute("aria-valuenow", String(pasoActual + 1));
+
+      renderStepDots();
+
+      prevButton.disabled = pasoActual === 0;
+      nextButton.textContent = pasoActual === pasos.length - 1 ? "Terminar vaso ✓" : "Siguiente paso →";
+
+      stepPanel.style.display = "block";
+      finishPanel.classList.remove("visible");
+      navButtons.style.display = "flex";
+
+      stopAnimation();
+      applyAnglePreset(currentAnglePreset, false);
+      drawPaperModel(pasoActual, 0);
+      updateCaption();
+
+      if (playAutoAnim) {
+        startAnimation();
+      }
     }
 
-    function resetToFront() {
-      angleButtons.forEach(b => b.classList.remove("active"));
-      document.querySelector('[data-angle="frente"]').classList.add("active");
-      rotX = 0;
-      rotY = 0;
-      updateTransform(true);
+    function renderStepDots() {
+      stepDots.innerHTML = "";
+      pasos.forEach((_, index) => {
+        const dot = document.createElement("div");
+        dot.className = `step-dot ${index === pasoActual ? "active" : ""} ${index < pasoActual ? "done" : ""}`;
+        dot.title = `Ir al paso ${index + 1}`;
+        dot.onclick = () => {
+          pasoActual = index;
+          playSound("step");
+          renderStep(true);
+        };
+        stepDots.appendChild(dot);
+      });
     }
 
-    const anglePresets = {
-      frente: { x: 0, y: 0 },
-      perspectiva: { x: 22, y: -26 },
-      arriba: { x: 62, y: 0 },
-      atras: { x: 0, y: 180 }
-    };
+    function updateCaption() {
+      const paso = pasos[pasoActual];
+      if (currentAnglePreset === "frente") visualCaption.textContent = paso.pieFrente;
+      else if (currentAnglePreset === "perspectiva") visualCaption.textContent = paso.pie3D;
+      else if (currentAnglePreset === "arriba") visualCaption.textContent = paso.pieArriba;
+      else if (currentAnglePreset === "reverso") visualCaption.textContent = paso.pieReverso;
+      else visualCaption.textContent = "Ángulo 3D libre: arrastra con el dedo o ratón para ver cualquier detalle.";
+    }
+
+    /* ── Rotación 3D y Presets ── */
+    function set3DTransform(smooth = true) {
+      if (!smooth) paperScene.classList.add("is-dragging");
+      else paperScene.classList.remove("is-dragging");
+
+      paperScene.style.transform = `
+        scale(${zoomLevel})
+        rotateX(${rotX}deg)
+        rotateY(${rotY}deg)
+      `;
+    }
+
+    function applyAnglePreset(preset, triggerSound = true) {
+      currentAnglePreset = preset;
+
+      angleButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.angle === preset);
+      });
+
+      if (preset === "frente") { rotX = 0; rotY = 0; }
+      else if (preset === "perspectiva") { rotX = 22; rotY = -26; }
+      else if (preset === "arriba") { rotX = 64; rotY = 0; }
+      else if (preset === "reverso") { rotX = 0; rotY = 180; }
+
+      set3DTransform(true);
+      updateCaption();
+      if (triggerSound) playSound("fold");
+    }
 
     angleButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        angleButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        const angle = btn.getAttribute("data-angle");
-        if (anglePresets[angle]) {
-          rotX = anglePresets[angle].x;
-          rotY = anglePresets[angle].y;
-          updateTransform(true);
-        }
-      });
+      btn.addEventListener("click", () => applyAnglePreset(btn.dataset.angle, true));
     });
 
-    resetAngleBtn.addEventListener("click", resetToFront);
+    resetAngleBtn.addEventListener("click", () => {
+      zoomLevel = 1.0;
+      applyAnglePreset("frente", true);
+    });
+
+    /* ── Giro 3D Táctil Libre ── */
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let startRotX = 0;
+    let startRotY = 0;
 
     stageWrapper.addEventListener("pointerdown", (e) => {
-      if (e.target.closest(".stage-footer, button")) return;
       isDragging = true;
+      stageWrapper.setPointerCapture(e.pointerId);
       startX = e.clientX;
       startY = e.clientY;
-      paperScene.classList.remove("smooth-preset");
-      stageWrapper.setPointerCapture(e.pointerId);
+      startRotX = rotX;
+      startRotY = rotY;
+      paperScene.classList.add("is-dragging");
     });
 
-    stageWrapper.addEventListener("pointermove", (e) => {
+    window.addEventListener("pointermove", (e) => {
       if (!isDragging) return;
       const dx = e.clientX - startX;
       const dy = e.clientY - startY;
-      rotY += dx * 0.55;
-      rotX -= dy * 0.55;
-      rotX = Math.max(-65, Math.min(75, rotX));
-      startX = e.clientX;
-      startY = e.clientY;
-      updateTransform(false);
+
+      rotY = startRotY + dx * 0.65;
+      rotX = Math.max(-45, Math.min(75, startRotX - dy * 0.65));
+
+      currentAnglePreset = "custom";
+      angleButtons.forEach(b => b.classList.remove("active"));
+      set3DTransform(false);
+      updateCaption();
     });
 
-    const endDrag = () => { isDragging = false; };
-    stageWrapper.addEventListener("pointerup", endDrag);
-    stageWrapper.addEventListener("pointercancel", endDrag);
+    function endDrag(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      paperScene.classList.remove("is-dragging");
+      try { stageWrapper.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+    window.addEventListener("pointerup", endDrag);
+    window.addEventListener("pointercancel", endDrag);
 
-    /* ── Animación del Doblez ── */
-    function playFoldAnimation() {
-      if (animTimer !== null) cancelAnimationFrame(animTimer);
-      let start = null;
-      const duration = 1600;
-      animateFoldBtn.disabled = true;
-      animateFoldBtn.innerHTML = "<span>⟳</span> Doblando…";
-
-      function step(timestamp) {
-        if (!start) start = timestamp;
-        const progress = Math.min((timestamp - start) / duration, 1);
-        const ease = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-        drawPaperModel(actual, ease);
-
-        if (progress < 1) {
-          animTimer = requestAnimationFrame(step);
-        } else {
-          drawPaperModel(actual, 1);
-          animTimer = null;
-          animateFoldBtn.disabled = false;
-          animateFoldBtn.innerHTML = "<span>▶</span> Ver cómo se dobla";
-        }
+    /* ── Animación del Doblez (Plegado Suave) ── */
+    function stopAnimation() {
+      if (animFrameId) {
+        cancelAnimationFrame(animFrameId);
+        animFrameId = null;
       }
-      animTimer = requestAnimationFrame(step);
+      isAnimating = false;
+      animProgress = 0;
+      animIcon.textContent = "▶";
+      animText.textContent = "Ver cómo se dobla";
+      animateFoldBtn.classList.remove("active");
     }
 
-    animateFoldBtn.addEventListener("click", playFoldAnimation);
+    function startAnimation() {
+      isAnimating = true;
+      animIcon.textContent = "⏸";
+      animText.textContent = "Pausar";
+      animateFoldBtn.classList.add("active");
+      playSound("fold");
 
-    /* ── Accesibilidad: Tamaño de Texto ── */
-    fontToggleBtn.addEventListener("click", () => {
-      largeFont = !largeFont;
-      document.documentElement.style.setProperty("--font-size-base", largeFont ? "19px" : "16px");
-      fontBtnText.textContent = largeFont ? "Letra normal" : "Letra grande";
+      let startTime = null;
+      const duration = 1350; // ms por recorrido
+
+      function loop(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = (timestamp - startTime) % (duration * 2);
+
+        if (elapsed < duration) {
+          animProgress = elapsed / duration;
+        } else {
+          animProgress = 1 - (elapsed - duration) / duration;
+        }
+
+        drawPaperModel(pasoActual, animProgress);
+
+        if (isAnimating) {
+          animFrameId = requestAnimationFrame(loop);
+        }
+      }
+
+      animFrameId = requestAnimationFrame(loop);
+    }
+
+    animateFoldBtn.addEventListener("click", () => {
+      if (isAnimating) {
+        stopAnimation();
+        drawPaperModel(pasoActual, 0);
+      } else {
+        startAnimation();
+      }
     });
 
-    /* ── Confetti Celebratorio en Canvas ── */
-    function dispararConfetti() {
-      const ctx = confettiCanvas.getContext("2d");
-      confettiCanvas.width = window.innerWidth;
-      confettiCanvas.height = window.innerHeight;
+    /* ── Navegación ── */
+    function siguientePaso() {
+      if (pasoActual < pasos.length - 1) {
+        pasoActual++;
+        playSound("step");
+        if (navigator.vibrate) navigator.vibrate(20);
+        renderStep(true);
+      } else {
+        mostrarFinal();
+      }
+    }
+
+    function pasoAnterior() {
+      if (pasoActual > 0) {
+        pasoActual--;
+        playSound("step");
+        if (navigator.vibrate) navigator.vibrate(15);
+        renderStep(true);
+      }
+    }
+
+    function mostrarFinal() {
+      stepPanel.style.display = "none";
+      finishPanel.classList.add("visible");
+      navButtons.style.display = "none";
+      visualStepChip.textContent = "¡Completado!";
+      visualCaption.textContent = "¡Felicitaciones! Abre con cuidado las paredes de tu vaso.";
+      progressText.textContent = "6 de 6 pasos (100%)";
+      progressFill.style.width = "100%";
+      progressBar.setAttribute("aria-valuenow", "6");
+
+      playSound("win");
+      lanzarConfetti();
+      applyAnglePreset("perspectiva", false);
+      drawPaperModel(5, 1);
+    }
+
+    function reiniciarTutorial() {
+      pasoActual = 0;
+      playSound("step");
+      renderStep(true);
+    }
+
+    prevButton.addEventListener("click", pasoAnterior);
+    nextButton.addEventListener("click", siguientePaso);
+    restartButton.addEventListener("click", reiniciarTutorial);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === " ") siguientePaso();
+      if (e.key === "ArrowLeft") pasoAnterior();
+    });
+
+    /* ── Accesibilidad (Tamaño de Texto) ── */
+
+    fontBtn.addEventListener("click", () => {
+      largeTextEnabled = !largeTextEnabled;
+      document.documentElement.style.setProperty(
+        "--font-size-base",
+        largeTextEnabled ? "18px" : "16px"
+      );
+    });
+
+    /* ── Confetti en Canvas Nativo ── */
+    function lanzarConfetti() {
+      const canvas = confettiCanvas;
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
       const particles = [];
-      const colors = ["#e8734a", "#336948", "#f4a261", "#d9383a", "#ffffff", "#ffd166"];
+      const colors = ["#e8734a", "#336948", "#ffd4b2", "#f4a261", "#ffffff", "#d9383a"];
 
-      for (let i = 0; i < 90; i++) {
+      for (let i = 0; i < 80; i++) {
         particles.push({
-          x: confettiCanvas.width * 0.5 + (Math.random() * 140 - 70),
-          y: confettiCanvas.height * 0.35 + (Math.random() * 60 - 30),
+          x: canvas.width * 0.5 + (Math.random() * 160 - 80),
+          y: canvas.height * 0.4 + (Math.random() * 80 - 40),
           vx: (Math.random() - 0.5) * 11,
-          vy: Math.random() * -7 - 3,
-          size: Math.random() * 9 + 5,
+          vy: -Math.random() * 13 - 3,
+          size: Math.random() * 7 + 5,
           color: colors[Math.floor(Math.random() * colors.length)],
           rotation: Math.random() * 360,
-          rotationSpeed: (Math.random() - 0.5) * 10
+          vRot: (Math.random() - 0.5) * 10,
+          opacity: 1
         });
       }
 
-      let frames = 0;
-      function loop() {
-        ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-        frames++;
+      let animId;
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
 
         particles.forEach(p => {
           p.x += p.vx;
           p.y += p.vy;
-          p.vy += 0.28;
-          p.rotation += p.rotationSpeed;
+          p.vy += 0.36;
+          p.vx *= 0.98;
+          p.rotation += p.vRot;
+          p.opacity -= 0.008;
 
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate((p.rotation * Math.PI) / 180);
-          ctx.fillStyle = p.color;
-          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
-          ctx.restore();
+          if (p.opacity > 0 && p.y < canvas.height) {
+            active = true;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
+            ctx.restore();
+          }
         });
 
-        if (frames < 120) {
-          requestAnimationFrame(loop);
-        } else {
-          ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        if (active) animId = requestAnimationFrame(render);
+        else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(animId);
         }
       }
-      loop();
+
+      render();
     }
 
-    /* ── Navegación con Teclado ── */
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight") {
-        if (actual < pasos.length - 1) { actual++; render(); }
-      } else if (e.key === "ArrowLeft") {
-        if (actual > 0) { actual--; render(); }
-      }
+    window.addEventListener("resize", () => {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
     });
 
-    function render() {
-      const p = pasos[actual];
-      const numero = actual + 1;
-      stepChip.textContent = `Paso ${numero} de ${pasos.length}`;
-      progressFill.style.width = `${(numero / pasos.length) * 100}%`;
-      stepTitle.textContent = p.titulo;
-      stepInstruction.textContent = p.instruccion;
-      stepTip.innerHTML = `<strong>💡 El truco:</strong> ${p.consejo}`;
-      btnPrev.disabled = actual === 0;
-
-      if (actual === pasos.length - 1) {
-        btnNext.textContent = "¡Completado! 🎉";
-        celebrationBanner.classList.add("show");
-        dispararConfetti();
-      } else {
-        btnNext.textContent = "Siguiente paso →";
-        celebrationBanner.classList.remove("show");
-      }
-
-      // Cada cambio de paso resetea la vista de frente para no desorientar
-      resetToFront();
-      drawPaperModel(actual, 0);
-    }
-
-    btnPrev.addEventListener("click", () => {
-      if (actual > 0) { actual--; render(); }
-    });
-
-    btnNext.addEventListener("click", () => {
-      if (actual < pasos.length - 1) { actual++; render(); }
-      else { actual = 0; render(); }
-    });
-
-    render();
+    /* ── Inicialización ── */
+    renderStep(true);
   </script>
 </body>
 </html>
