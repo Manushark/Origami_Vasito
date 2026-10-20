@@ -1,11 +1,353 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#f6f0e6">
+  <title>Vasito — Aprende a doblar un vaso de papel</title>
+  <style>
+    :root {
+      --fondo: #f6f0e6;
+      --papel-mamey: #e8734a;
+      --papel-mamey-oscuro: #c85a35;
+      --papel-blanco: #ffffff;
+      --tinta: #1d2e24;
+      --suave: #536458;
+      --verde: #336948;
+      --verde-hover: #265237;
+      --borde: #e4dacb;
+      --tarjeta: #ffffff;
+      --sombra: 0 12px 32px rgba(45, 35, 25, 0.08);
+      --radio: 20px;
+      --font-size-base: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: var(--font-size-base); }
+    body {
+      background: var(--fondo);
+      color: var(--tinta);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      padding: 16px 12px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app {
+      width: min(600px, 100%);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Cabecera */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 4px 18px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--tinta);
+      letter-spacing: -0.02em;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--papel-mamey);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 10px rgba(232, 115, 74, 0.25);
+    }
+    .pill-offline {
+      background: #e6f3eb;
+      color: var(--verde);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(51, 105, 72, 0.2);
+    }
+
+    /* Introducción */
+    .intro {
+      margin-bottom: 16px;
+      padding: 0 4px;
+    }
+    .intro h1 {
+      font-size: clamp(1.6rem, 5vw, 2.1rem);
+      line-height: 1.2;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+    .intro p {
+      color: var(--suave);
+      font-size: 1.05rem;
+    }
+
+    /* Tarjeta Principal */
+    .card {
+      background: var(--tarjeta);
+      border-radius: var(--radio);
+      border: 1px solid var(--borde);
+      box-shadow: var(--sombra);
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Progreso */
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .step-chip {
+      background: rgba(232, 115, 74, 0.12);
+      color: var(--papel-mamey-oscuro);
+      font-size: 0.9rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+    .progress-bar {
+      height: 8px;
+      background: #ede5da;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 16.666%;
+      background: linear-gradient(90deg, var(--papel-mamey), #f4a261);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    /* Espacio Reservado para la Ilustración */
+    .stage-placeholder {
+      background: #faf6ef;
+      border: 2px dashed #d8cbba;
+      border-radius: 16px;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--suave);
+      margin-bottom: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stage-placeholder span {
+      font-size: 2.2rem;
+    }
+    .stage-placeholder p {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #7d7065;
+    }
+
+    /* Textos del Paso */
+    .step-content {
+      margin-bottom: 24px;
+    }
+    .step-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 10px;
+      color: var(--tinta);
+    }
+    .step-instruction {
+      font-size: 1.1rem;
+      line-height: 1.55;
+      color: #2a3d32;
+      margin-bottom: 14px;
+    }
+    .tip-card {
+      background: #fbf5ed;
+      border-left: 4px solid var(--papel-mamey);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      color: #5a4b3d;
+      line-height: 1.45;
+    }
+    .tip-card strong {
+      color: var(--papel-mamey-oscuro);
+    }
+
+    /* Botones de Navegación */
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    .btn {
+      flex: 1;
+      min-height: 54px;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.15s, background-color 0.15s, box-shadow 0.15s;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn-prev {
+      background: #f0e7db;
+      color: var(--tinta);
+      border: 1px solid var(--borde);
+    }
+    .btn-prev:hover:not(:disabled) {
+      background: #e6dcce;
+    }
+    .btn-next {
+      background: var(--verde);
+      color: white;
+      box-shadow: 0 4px 12px rgba(51, 105, 72, 0.25);
+    }
+    .btn-next:hover:not(:disabled) {
+      background: var(--verde-hover);
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  </style>
 </head>
 <body>
+  <div class="app">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">🥤</div>
+        Vasito
+      </div>
+      <span class="pill-offline">● Sin internet</span>
+    </header>
 
+    <section class="intro">
+      <h1>Una hoja, un vaso.<br>¡Tú puedes!</h1>
+      <p>Sigue cada doblez paso a paso, con calma y a tu ritmo.</p>
+    </section>
+
+    <main class="card" aria-label="Instrucciones paso a paso">
+      <div class="progress-header">
+        <span class="step-chip" id="stepChip">Paso 1 de 6</span>
+      </div>
+
+      <div class="progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="stage-placeholder" id="stagePlaceholder">
+        <span>📐</span>
+        <p>Espacio reservado para el dibujo del paso</p>
+      </div>
+
+      <div class="step-content">
+        <h2 class="step-title" id="stepTitle"></h2>
+        <p class="step-instruction" id="stepInstruction"></p>
+        <div class="tip-card" id="stepTip"></div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-prev" id="btnPrev" disabled>← Anterior</button>
+        <button class="btn btn-next" id="btnNext">Siguiente paso →</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    "use strict";
+
+    const pasos = [
+      {
+        titulo: "Paso 1: Dobla la hoja por la mitad",
+        instruccion: "Pon la hoja como un diamante (una punta arriba y otra abajo). Lleva la punta de abajo hasta la punta de arriba para formar un triángulo.",
+        consejo: "Alinea bien las puntas antes de aplastar el pliegue con los dedos."
+      },
+      {
+        titulo: "Paso 2: Dobla la punta derecha hacia la izquierda",
+        instruccion: "Toma la punta de la derecha y llévala hacia el borde izquierdo. El borde superior de lo que doblaste debe quedar completamente recto y horizontal.",
+        consejo: "El borde de arriba debe verse horizontal, como una mesa recta."
+      },
+      {
+        titulo: "Paso 3: Dobla la punta izquierda hacia la derecha",
+        instruccion: "Ahora toma la punta de la izquierda y crúzala hacia la derecha por encima de la anterior, llevándola hasta la esquina contraria.",
+        consejo: "Las dos solapas quedan cruzadas en el frente, una sobre la otra."
+      },
+      {
+        titulo: "Paso 4: Guarda la punta delantera en el bolsillo",
+        instruccion: "Arriba te quedan dos puntas sueltas. Toma solo la de adelante, bájala hacia ti y métela dentro del bolsillo frontal. Deja la otra punta arriba.",
+        consejo: "¡Ojo! Son dos puntas: dobla únicamente la de adelante, la otra se queda arriba."
+      },
+      {
+        titulo: "Paso 5: Voltea el vaso y dobla la otra punta",
+        instruccion: "Dale la vuelta a todo el papel. Ahora toma la otra punta (la que dejamos arriba) y dóblala hacia abajo por detrás, pegada al vaso.",
+        consejo: "Pasa los dedos firmemente sobre el borde superior para asegurar la forma."
+      },
+      {
+        titulo: "Paso 6: Abre tu vasito",
+        instruccion: "Presiona suavemente los lados con los dedos para abrir la boca del vaso y separar las paredes interiores.",
+        consejo: "¡Listo! Ya tienes tu vaso de papel terminado y listo para usar."
+      }
+    ];
+
+    let actual = 0;
+    const stepChip = document.getElementById("stepChip");
+    const progressFill = document.getElementById("progressFill");
+    const stepTitle = document.getElementById("stepTitle");
+    const stepInstruction = document.getElementById("stepInstruction");
+    const stepTip = document.getElementById("stepTip");
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+
+    function render() {
+      const p = pasos[actual];
+      const numero = actual + 1;
+      stepChip.textContent = `Paso ${numero} de ${pasos.length}`;
+      progressFill.style.width = `${(numero / pasos.length) * 100}%`;
+      stepTitle.textContent = p.titulo;
+      stepInstruction.textContent = p.instruccion;
+      stepTip.innerHTML = `<strong>💡 El truco:</strong> ${p.consejo}`;
+      btnPrev.disabled = actual === 0;
+      btnNext.textContent = actual === pasos.length - 1 ? "¡Completado! 🎉" : "Siguiente paso →";
+    }
+
+    btnPrev.addEventListener("click", () => {
+      if (actual > 0) { actual--; render(); }
+    });
+
+    btnNext.addEventListener("click", () => {
+      if (actual < pasos.length - 1) { actual++; render(); }
+      else { actual = 0; render(); }
+    });
+
+    render();
+  </script>
 </body>
 </html>
